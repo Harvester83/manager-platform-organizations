@@ -6,17 +6,37 @@ import { mockUsers } from "../data";
 import { useAppDispatch } from "../store";
 
 interface FormValue {
+  organizationName: string;
   username: string;
   password: string;
 }
 
 const SignUp = () => {
-  const initialValues: FormValue = { username: "", password: "" };
+  const initialValues: FormValue = { organizationName: "", username: "", password: "" };
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const validate = (values: FormValue) => {
+    const errors: Partial<FormValue> = {};
+
+    if (values.organizationName) {
+      errors.password = "organizationName is required";
+    }
+
+    if (!values.username) {
+      errors.username = "Username is required";
+    } else if (!values.password) {
+      errors.password = "Password is required";
+    }
+
+    if (values.password.length < 6) {
+      errors.password = "Password must be at least 6 characters long";
+    }
+
+    return errors;
+  };
+
   const handleSubmit = (values: FormValue) => {
-  
     // fix
     if (values) {
       //dispatch(setCurrentUser(user));
@@ -38,13 +58,6 @@ const SignUp = () => {
         <h2 className="title-h2 title-h2_mb title-h2_center">Sign Up</h2>
 
         {/* <form className="form">
-          <TextField
-            id="input-organization-name"
-            className="input-wrapper"
-            label="Organization name"
-            type="text"
-          />
-
           <TextField
             id="input-address"
             className="input-wrapper"
@@ -86,7 +99,7 @@ const SignUp = () => {
 
         <Formik
           initialValues={initialValues}
-          //validate={validate}
+          validate={validate}
           onSubmit={(values) => handleSubmit(values)}
         >
           {({
@@ -98,6 +111,19 @@ const SignUp = () => {
             handleSubmit,
           }) => (
             <Form onSubmit={handleSubmit}>
+              <TextField
+                error={!!errors.organizationName && !dirty}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                id="input-organization-name"
+                name="organizationName"
+                placeholder="Organization name"
+                className="input-wrapper"
+                label="Organization name"
+                type="text"
+                helperText={!!errors.organizationName && !dirty ? errors.organizationName : ""}
+              />
+
               <TextField
                 error={!!errors.username && !dirty}
                 onBlur={handleBlur}
@@ -127,7 +153,7 @@ const SignUp = () => {
               <Button
                 type="submit"
                 variant="contained"
-                //disabled={isValid && dirty ? false : true}
+                disabled={isValid && dirty ? false : true}
               >
                 Sign in
               </Button>

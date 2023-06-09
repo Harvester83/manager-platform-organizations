@@ -55,46 +55,11 @@ export const UserSlice = createSlice({
       });
     },
 
-    addUserArray: (
-      state,
-      action: PayloadAction<
-        Array<{
-          id: number;
-          organization_id: number;
-          organization_name: string;
-          phone: string;
-          address: string;
-          username: string;
-          lastName: string;
-          email: string;
-          password: string;
-          role: string;
-        }>
-      >
-    ) => {
-      action.payload.forEach((user) => {
-        state.users.push({
-          id: user.id,
-          organization_id: user.organization_id,
-          organization_name: user.organization_name,
-          phone: user.phone,
-          address: user.address,
-          username: user.username,
-          lastName: user.lastName,
-          email: user.email,
-          password: user.password,
-          role: user.role,
-        });
-      });
-    },
-
-    deleteUserArray: (state, action: PayloadAction<number[]>) => {
-      state.users = state.users.filter(
-        (user) => !action.payload.includes(user.id)
-      );
+    saveUsers: (state, action: PayloadAction<User[]>) => {
+      state.users = action.payload;
     },
   },
 });
 
 export default UserSlice.reducer;
-export const { addUser, addUserArray, deleteUserArray } = UserSlice.actions;
+export const { addUser, saveUsers } = UserSlice.actions;

@@ -7,16 +7,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { useAppDispatch, useAppSelector } from "../store";
 import { mockUsers } from "../data";
-import {
-  User,
-  addUser,
-  addUserArray,
-  deleteUserArray,
-} from "../store/user/slice";
-
-// interface UsersManager {
-//   id: number;
-// }
+import { User, addUser, saveUsers } from "../store/user/slice";
 
 const Manager: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -32,15 +23,8 @@ const Manager: React.FC = () => {
       (user) => user.organization_id === currentUser["organization_id"]
     );
 
-    // const uniqueEmployees = employeesOrganization.filter(
-    //   (employee) => !employees.find((emp) => emp.id === employee.id)
-    // );
-
-    // dispatch(deleteUserArray(employees as []));
-    // dispatch(addUserArray(employeesOrganization as []));
-
-    
-  }, [currentUser, dispatch, employees]);
+    dispatch(saveUsers(employeesOrganization));
+  }, [currentUser, dispatch]);
 
   return (
     <div style={{ padding: "50px 20px" }}>
@@ -71,7 +55,7 @@ const Manager: React.FC = () => {
           </Box>
 
           <ul className="list">
-            {employees.map((employee) => (
+            {employees?.map((employee: any) => (
               <li key={employee.id}>
                 <div onClick={() => console.log(employee.id)}>
                   {`${employee.username} ${employee.lastName}`}
@@ -112,6 +96,22 @@ const Manager: React.FC = () => {
           </ul>
         </Grid>
       </Grid>
+
+      <div className="modal-container">
+        <div className="modal-box">
+          <h2 className="modal-title">Modal Title</h2>
+          <div className="modal-content">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Non nobis
+            quos, quisquam ipsum iure pariatur! Blanditiis cupiditate architecto
+            quis repellendus rerum esse asperiores aliquam sit tenetur
+            distinctio veniam, nihil saepe?
+          </div>
+          <div className="modal-buttons">
+            <button>Button 1</button>
+            <button>Button 2</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
