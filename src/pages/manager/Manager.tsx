@@ -1,18 +1,43 @@
 import React from "react";
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Grid, TextField } from "@mui/material";
 //import { Delete, AddIcon } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import { useAppDispatch, useAppSelector } from "../store";
-import { mockUsers } from "../data";
-import { User, addUser, saveUsers } from "../store/user/slice";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { mockUsers } from "../../data";
+import { User, addUser, deleteUser, saveUsers } from "../../store/user/slice";
+import ModalWindow from "../../components/ModalWindow";
+import { UserEditForm } from "./UserEditForm";
+import { UserForm } from "./UserForm";
 
 const Manager: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.currentUser);
   const employees = useAppSelector((state) => state.user.users);
+
+  const [open, setOpen] = React.useState(false);
+  const [editUser, setEditUser] = React.useState<User | null>(null);
+
+  const handleEditUser = (id: number) => {
+    const editUserData = employees.find((employee: User) => employee.id === id);
+    if (!editUserData) {
+      return;
+    }
+
+    setEditUser(editUserData);
+    setOpen(true);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+  };
 
   React.useEffect(() => {
     if (!currentUser) {
@@ -49,20 +74,35 @@ const Manager: React.FC = () => {
           >
             <h2 className="title-h3 title-h3_mr title-h3_center">Employees</h2>
 
-            <Button variant="contained">
+            <Button onClick={handleClickOpen} variant="contained">
               <PersonAddIcon />
             </Button>
           </Box>
 
           <ul className="list">
-            {employees?.map((employee: any) => (
+            {employees?.map((employee) => (
               <li key={employee.id}>
                 <div onClick={() => console.log(employee.id)}>
                   {`${employee.username} ${employee.lastName}`}
                 </div>
-                <IconButton aria-label="delete" size="small">
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
+
+                <div>
+                  <IconButton
+                    onClick={() => handleEditUser(employee.id)}
+                    aria-label="edit"
+                    size="small"
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+
+                  <IconButton
+                    onClick={() => dispatch(deleteUser(employee.id))}
+                    aria-label="delete"
+                    size="small"
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </div>
               </li>
             ))}
           </ul>
@@ -97,21 +137,15 @@ const Manager: React.FC = () => {
         </Grid>
       </Grid>
 
-      <div className="modal-container">
-        <div className="modal-box">
-          <h2 className="modal-title">Modal Title</h2>
-          <div className="modal-content">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Non nobis
-            quos, quisquam ipsum iure pariatur! Blanditiis cupiditate architecto
-            quis repellendus rerum esse asperiores aliquam sit tenetur
-            distinctio veniam, nihil saepe?
-          </div>
-          <div className="modal-buttons">
-            <button>Button 1</button>
-            <button>Button 2</button>
-          </div>
+      <ModalWindow open={open} handleClose={closeModal}>
+        <div className="modal-content">
+          {editUser ? (
+            <UserEditForm handleClose={closeModal} editUser={editUser} />
+          ) : (
+            <UserForm handleClose={closeModal} />
+          )}
         </div>
-      </div>
+      </ModalWindow>
     </div>
   );
 };

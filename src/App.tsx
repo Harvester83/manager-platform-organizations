@@ -4,7 +4,7 @@ import "./App.scss";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import MainLayout from "./layouts/MainLayout";
-import Manager from "./pages/Manager";
+import Manager from "./pages/manager/Manager";
 import { Provider } from "react-redux";
 import { store } from "./store";
 

@@ -57,46 +57,6 @@ const SignUp = () => {
       >
         <h2 className="title-h2 title-h2_mb title-h2_center">Sign Up</h2>
 
-        {/* <form className="form">
-          <TextField
-            id="input-address"
-            className="input-wrapper"
-            label="Address"
-            type="text"
-          />
-
-          <TextField
-            id="input-phone"
-            className="input-wrapper"
-            label="Phone"
-            type="text"
-          />
-
-          <TextField
-            id="input-email"
-            className="input-wrapper"
-            label="Email"
-            type="email"
-          />
-
-          <TextField
-            id="input-name"
-            className="input-wrapper"
-            label="Username"
-            type="text"
-          />
-
-          <TextField
-            id="input-password"
-            className="input-wrapper"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-          />
-
-          <Button variant="contained">Sign Up</Button>
-        </form> */}
-
         <Formik
           initialValues={initialValues}
           validate={validate}

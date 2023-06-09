@@ -21,21 +21,21 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // const validate = (values: FormValue) => {
-  //   const errors: Partial<FormValue> = {};
+  const validate = (values: FormValue) => {
+    const errors: Partial<FormValue> = {};
 
-  //   if (!values.username) {
-  //     errors.username = "Username is required";
-  //   } else if (!values.password) {
-  //     errors.password = "Password is required";
-  //   }
+    if (!values.username) {
+      errors.password = "Username is required";
+    }
 
-  //   if (values.password.length < 6) {
-  //     errors.password = "Password must be at least 6 characters long";
-  //   }
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 6) {
+      errors.password = "Password must be at least 6 characters long";
+    }
 
-  //   return errors;
-  // };
+    return errors;
+  };
 
   const handleSubmit = (values: FormValue) => {
     const user = mockUsers.find(

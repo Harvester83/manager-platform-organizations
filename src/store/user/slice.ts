@@ -4,8 +4,8 @@ export interface User {
   id: number;
   organization_id: number;
   organization_name: string;
-  phone: string;
-  address: string;
+  phone: string | null;
+  address: string | null;
   username: string;
   lastName: string;
   email: string;
@@ -32,8 +32,8 @@ export const UserSlice = createSlice({
         id: number;
         organization_id: number;
         organization_name: string;
-        phone: string;
-        address: string;
+        phone: string | null;
+        address: string | null;
         username: string;
         lastName: string;
         email: string;
@@ -58,8 +58,56 @@ export const UserSlice = createSlice({
     saveUsers: (state, action: PayloadAction<User[]>) => {
       state.users = action.payload;
     },
+
+    deleteUser: (state, action: PayloadAction<number>) => {
+      state.users = state.users.filter((user) => user.id !== action.payload);
+    },
+
+    editUser: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        organization_id: number;
+        organization_name: string;
+        phone: string | null;
+        address: string | null;
+        username: string;
+        lastName: string;
+        email: string;
+        password: string;
+        role: string;
+      }>
+    ) => {
+      const {
+        id,
+        organization_id,
+        organization_name,
+        phone,
+        address,
+        username,
+        lastName,
+        email,
+        password,
+        role,
+      } = action.payload;
+      const userIndex = state.users.findIndex((user) => user.id === id);
+      if (userIndex !== -1) {
+        state.users[userIndex] = {
+          id,
+          organization_id,
+          organization_name,
+          phone,
+          address,
+          username,
+          lastName,
+          email,
+          password,
+          role,
+        };
+      }
+    },
   },
 });
 
 export default UserSlice.reducer;
-export const { addUser, saveUsers } = UserSlice.actions;
+export const { addUser, deleteUser, editUser, saveUsers } = UserSlice.actions;

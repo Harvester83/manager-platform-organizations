@@ -1,53 +1,27 @@
-// //import styled from 'styled-components';
-// import { Modal, Box, Typography, Button } from '@mui/material';
+import React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
-// const ModalContainer = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
+interface ModalWindowProps {
+  open: boolean;
+  handleClose: () => void;
+  children: React.ReactNode;
+}
 
-// const ModalBox = styled.div`
-//   background-color: #fff;
-//   border-radius: 4px;
-//   padding: 20px;
-//   box-shadow: 0 2px 4px rgba(56, 17, 17, 0.2);
-// `;
+const ModalWindow: React.FC<ModalWindowProps> = ({
+  open,
+  handleClose,
+  children,
+}) => {
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle style={{ padding: "20px" }}>Subscribe</DialogTitle>
+      <DialogContent style={{ padding: "20px" }}>{children}</DialogContent>
+    </Dialog>
+  );
+};
 
-// const ModalTitle = styled.h2`
-//   font-size: 20px;
-//   font-weight: bold;
-//   margin-bottom: 10px;
-// `;
-
-// const ModalContent = styled.div`
-//   margin-bottom: 20px;
-// `;
-
-// const ModalButtons = styled.div`
-//   display: flex;
-//   justify-content: flex-end;
-// `;
-
-// const ModalButton = styled(Button)`
-//   margin-left: 10px;
-// `;
-
-// const MyModal = () => {
-//   return (
-//     <Modal open={true}>
-//       <ModalContainer>
-//         <ModalBox>
-//           <ModalTitle>Modal Title</ModalTitle>
-//           <ModalContent>
-//             {/* Modal content goes here */}
-//           </ModalContent>
-//           <ModalButtons>
-//             <ModalButton variant="contained">Button 1</ModalButton>
-//             <ModalButton variant="contained">Button 2</ModalButton>
-//           </ModalButtons>
-//         </ModalBox>
-//       </ModalContainer>
-//     </Modal>
-//   );
-// };
+export default ModalWindow;
