@@ -1,7 +1,7 @@
 export const mockUsers = [
   {
     id: 1,
-    organization_id: 24,
+    organization_id: 18,
     organization_name: "GasCompany",
     phone: "+709289028",
     address: "Narimanov district",
@@ -9,10 +9,11 @@ export const mockUsers = [
     email: "rashad@gmail.com",
     password: "r123456",
     role: "admin",
+    lastName: "Surname1",
   },
   {
     id: 2,
-    organization_id: 18,
+    organization_id: 24,
     organization_name: "TechSolutions",
     phone: "+712345678",
     address: "Central district",
@@ -20,10 +21,11 @@ export const mockUsers = [
     email: "john@gmail.com",
     password: "123456",
     role: "user",
+    lastName: "Surname2",
   },
   {
     id: 3,
-    organization_id: 5,
+    organization_id: 24,
     organization_name: "FoodDelivery",
     phone: "+701234567",
     address: "City Center",
@@ -31,6 +33,7 @@ export const mockUsers = [
     email: "emma@gmail.com",
     password: "abc123",
     role: "user",
+    lastName: "Surname3",
   },
   {
     id: 4,
@@ -42,10 +45,11 @@ export const mockUsers = [
     email: "mike@gmail.com",
     password: "qwerty",
     role: "admin",
+    lastName: "Surname4",
   },
   {
     id: 5,
-    organization_id: 8,
+    organization_id: 24,
     organization_name: "FashionStore",
     phone: "+700000000",
     address: "Shopping Mall",
@@ -53,10 +57,11 @@ export const mockUsers = [
     email: "sarah@gmail.com",
     password: "pass1234",
     role: "user",
+    lastName: "Surname5",
   },
   {
     id: 6,
-    organization_id: 15,
+    organization_id: 24,
     organization_name: "SoftwareTech",
     phone: "+704444444",
     address: "Tech Park",
@@ -64,6 +69,7 @@ export const mockUsers = [
     email: "alex@gmail.com",
     password: "securepass",
     role: "user",
+    lastName: "Surname6",
   },
   {
     id: 7,
@@ -75,6 +81,7 @@ export const mockUsers = [
     email: "jessica@gmail.com",
     password: "strong123",
     role: "admin",
+    lastName: "Surname7",
   },
   {
     id: 8,
@@ -86,6 +93,7 @@ export const mockUsers = [
     email: "david@gmail.com",
     password: "easypassword",
     role: "user",
+    lastName: "Surname8",
   },
   {
     id: 9,
@@ -97,6 +105,7 @@ export const mockUsers = [
     email: "emily@gmail.com",
     password: "health123",
     role: "user",
+    lastName: "Surname9",
   },
   {
     id: 10,
@@ -108,6 +117,7 @@ export const mockUsers = [
     email: "daniel@gmail.com",
     password: "learn123",
     role: "admin",
+    lastName: "Surname10",
   },
 ];
 

@@ -3,6 +3,8 @@ import { Button, Grid, TextField } from "@mui/material";
 import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
 import { mockUsers } from "../data";
+import { useAppDispatch } from "../store";
+import { setCurrentUser } from "../store/currentUser/slice";
 
 interface FormValue {
   username: string;
@@ -17,35 +19,31 @@ interface ISignIn {
 const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
   const initialValues: FormValue = { username: "", password: "" };
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const validate = (values: FormValue) => {
-    const errors: Partial<FormValue> = {};
+  // const validate = (values: FormValue) => {
+  //   const errors: Partial<FormValue> = {};
 
-    if (!values.username) {
-      errors.username = "Username is required";
-    } else if (!values.password) {
-      errors.password = "Password is required";
-    }
+  //   if (!values.username) {
+  //     errors.username = "Username is required";
+  //   } else if (!values.password) {
+  //     errors.password = "Password is required";
+  //   }
 
-    if (values.password.length < 6) {
-      errors.password = "Password must be at least 6 characters long";
-    }
+  //   if (values.password.length < 6) {
+  //     errors.password = "Password must be at least 6 characters long";
+  //   }
 
-    return errors;
-  };
+  //   return errors;
+  // };
 
   const handleSubmit = (values: FormValue) => {
-    //console.log(values);
     const user = mockUsers.find(
-      (user) =>
-        user.username === values.username && user.password === values.password
+      (user) => user.username === "rr" && user.password === "123456"
     );
 
     if (user) {
-      //setIsAuthenticated(true);
-      console.log(user);
-
-      // useState() // redux-toolkit
+      dispatch(setCurrentUser(user));
       navigate("/manager");
     }
   };
@@ -64,7 +62,7 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
         <h2 className="title-h2 title-h2_mb title-h2_center">Sign In</h2>
         <Formik
           initialValues={initialValues}
-          validate={validate}
+          //validate={validate}
           onSubmit={(values) => handleSubmit(values)}
         >
           {({
@@ -105,7 +103,7 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
               <Button
                 type="submit"
                 variant="contained"
-                disabled={isValid && dirty ? false : true}
+                //disabled={isValid && dirty ? false : true}
               >
                 Sign in
               </Button>

@@ -1,24 +1,46 @@
-import React, { FC } from "react";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import React from "react";
+import { Box, Button, Grid } from "@mui/material";
 //import { Delete, AddIcon } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-//import { data } from "../data";
+import { useAppDispatch, useAppSelector } from "../store";
+import { mockUsers } from "../data";
+import {
+  User,
+  addUser,
+  addUserArray,
+  deleteUserArray,
+} from "../store/user/slice";
 
-interface UsersManager {
-  id: number;
-}
+// interface UsersManager {
+//   id: number;
+// }
 
-const Manager: FC = () => {
-  const [userData, setUserData] = React.useState({});
+const Manager: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.currentUser);
+  const employees = useAppSelector((state) => state.user.users);
 
   React.useEffect(() => {
-    // const newData = data.users.filter((user) => user.id === 2);
-    // console.log(newData);
-    // setUserData(newData);
-  }, []);
+    if (!currentUser) {
+      return;
+    }
+
+    const employeesOrganization = mockUsers.filter(
+      (user) => user.organization_id === currentUser["organization_id"]
+    );
+
+    // const uniqueEmployees = employeesOrganization.filter(
+    //   (employee) => !employees.find((emp) => emp.id === employee.id)
+    // );
+
+    // dispatch(deleteUserArray(employees as []));
+    // dispatch(addUserArray(employeesOrganization as []));
+
+    
+  }, [currentUser, dispatch, employees]);
 
   return (
     <div style={{ padding: "50px 20px" }}>
@@ -49,12 +71,16 @@ const Manager: FC = () => {
           </Box>
 
           <ul className="list">
-            <li>
-              <div onClick={() => console.log(23)}>Tural Qaziyev</div>
-              <IconButton aria-label="delete" size="small">
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </li>
+            {employees.map((employee) => (
+              <li key={employee.id}>
+                <div onClick={() => console.log(employee.id)}>
+                  {`${employee.username} ${employee.lastName}`}
+                </div>
+                <IconButton aria-label="delete" size="small">
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </li>
+            ))}
           </ul>
         </Grid>
 
