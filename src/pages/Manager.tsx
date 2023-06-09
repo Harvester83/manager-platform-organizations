@@ -3,10 +3,9 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 //import { Delete, AddIcon } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import { data } from "../data";
+//import { data } from "../data";
 
 interface UsersManager {
   id: number;
@@ -16,10 +15,10 @@ const Manager: FC = () => {
   const [userData, setUserData] = React.useState({});
 
   React.useEffect(() => {
-    const newData = data.users.filter((user) => user.id === 2);
-    console.log(newData);
-    setUserData(newData);
-  }, [data]);
+    // const newData = data.users.filter((user) => user.id === 2);
+    // console.log(newData);
+    // setUserData(newData);
+  }, []);
 
   return (
     <div style={{ padding: "50px 20px" }}>

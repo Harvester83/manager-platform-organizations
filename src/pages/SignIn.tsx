@@ -1,7 +1,55 @@
 import React from "react";
 import { Button, Grid, TextField } from "@mui/material";
+import { Formik, Form } from "formik";
+import { useNavigate } from "react-router-dom";
+import { mockUsers } from "../data";
 
-const SignIn = () => {
+interface FormValue {
+  username: string;
+  password: string;
+}
+
+interface ISignIn {
+  //isAuthenticated: boolean;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
+  const initialValues: FormValue = { username: "", password: "" };
+  const navigate = useNavigate();
+
+  const validate = (values: FormValue) => {
+    const errors: Partial<FormValue> = {};
+
+    if (!values.username) {
+      errors.username = "Username is required";
+    } else if (!values.password) {
+      errors.password = "Password is required";
+    }
+
+    if (values.password.length < 6) {
+      errors.password = "Password must be at least 6 characters long";
+    }
+
+    return errors;
+  };
+
+  const handleSubmit = (values: FormValue) => {
+    //console.log(values);
+    const user = mockUsers.find(
+      (user) =>
+        user.username === values.username && user.password === values.password
+    );
+
+    if (user) {
+      //setIsAuthenticated(true);
+      console.log(user);
+
+      // useState() // redux-toolkit
+      navigate("/manager");
+    }
+  };
+
   return (
     <Grid container sx={{ justifyContent: "center" }}>
       <Grid
@@ -14,27 +62,56 @@ const SignIn = () => {
         }}
       >
         <h2 className="title-h2 title-h2_mb title-h2_center">Sign In</h2>
+        <Formik
+          initialValues={initialValues}
+          validate={validate}
+          onSubmit={(values) => handleSubmit(values)}
+        >
+          {({
+            handleChange,
+            errors,
+            isValid,
+            dirty,
+            handleBlur,
+            handleSubmit,
+          }) => (
+            <Form onSubmit={handleSubmit}>
+              <TextField
+                error={!!errors.username && !dirty}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                id="username"
+                name="username"
+                placeholder="Username"
+                className="input-wrapper"
+                label="Username"
+                type="text"
+                helperText={!!errors.username && !dirty ? errors.username : ""}
+              />
 
-        <div className="form">
-          <TextField
-            id="input-name"
-            className="input-wrapper"
-            label="Username"
-            type="text"
-          />
+              <TextField
+                error={!!errors.password && !isValid && !dirty}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                id="password"
+                name="password"
+                className="input-wrapper"
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                helperText={!!errors.password && !dirty ? errors.password : ""}
+              />
 
-          <div className="input-wrapper">
-            <TextField
-              id="input-password"
-              className="input-wrapper"
-              label="Password"
-              type="password"
-              autoComplete="current-password"
-            />
-          </div>
-
-          <Button variant="contained">Sign in</Button>
-        </div>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isValid && dirty ? false : true}
+              >
+                Sign in
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </Grid>
     </Grid>
   );
