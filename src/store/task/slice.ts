@@ -23,6 +23,33 @@ export const TaskSlice = createSlice({
   initialState,
 
   reducers: {
+    addTask: (
+      state,
+      action: PayloadAction<{
+        id: number;
+        task_organization_id: number;
+        name: string;
+        description: string;
+        deadline: string;
+        status: string;
+        employee_assigned: Array<number> | null;
+      }>
+    ) => {
+      state.tasks.push({
+        id: Date.now(),
+        name: action.payload.name,
+        task_organization_id: action.payload.task_organization_id,
+        description: action.payload.description,
+        deadline: action.payload.deadline,
+        status: action.payload.status,
+        employee_assigned: action.payload.employee_assigned
+      });
+    },
+
+    deleteTask: (state, action: PayloadAction<number>) => {
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload);
+    },
+
     saveTasks: (state, action: PayloadAction<Task[]>) => {
       state.tasks = action.payload;
     },
@@ -30,4 +57,4 @@ export const TaskSlice = createSlice({
 });
 
 export default TaskSlice.reducer;
-export const { saveTasks } = TaskSlice.actions;
+export const { addTask, deleteTask, saveTasks } = TaskSlice.actions;

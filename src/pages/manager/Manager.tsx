@@ -8,10 +8,8 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { User, addUser, deleteUser, saveUsers } from "../../store/user/slice";
-import { Task, saveTasks } from "../../store/task/slice";
+import { Task, saveTasks, deleteTask } from "../../store/task/slice";
 import ModalWindow from "../../components/ModalWindow";
-import { UserEditForm } from "./UserEditForm";
-import { UserAddForm } from "./UserAddForm";
 import { mockUsers, mockTasks } from "../../data";
 import FormWrapper from "./FormWrapper";
 
@@ -22,6 +20,11 @@ export enum TypeForm {
   AddTask,
 }
 
+export interface DataEdit {
+  userEditData: User | null,
+  taskEditData: Task | null,
+}
+
 const Manager: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.currentUser);
@@ -30,7 +33,11 @@ const Manager: React.FC = () => {
 
   const [open, setOpen] = React.useState(false);
   const [typeForm, setTypeForm] = React.useState<TypeForm | null>(null);
-  const [userData, setUserData] = React.useState<User | null>(null);
+
+  //const [userData, setUserData] = React.useState<User | null>(null);
+  //const [taskData, setTaskData] = React.useState<Task | null>(null);
+
+  const [dataEdit, setDataEdit] = React.useState<DataEdit | null>(null);
 
   const handleEditUser = (id: number) => {
     const editUserData = employees.find((employee: User) => employee.id === id);
@@ -38,7 +45,20 @@ const Manager: React.FC = () => {
       return;
     }
 
-    setUserData(editUserData);
+    // setUserData(editUserData);
+    setDataEdit({ userEditData: editUserData, taskEditData: null });
+    setTypeForm(TypeForm.EditUser);
+    setOpen(true);
+  };
+
+  const handleEditTask = (id: number) => {
+    const editTaskData = tasks.find((task: Task) => task.id === id);
+    if (!editTaskData) {
+      return;
+    }
+
+    //setTaskData(editTaskData);
+    setDataEdit({ userEditData: null, taskEditData: editTaskData });
     setTypeForm(TypeForm.EditUser);
     setOpen(true);
   };
@@ -48,10 +68,16 @@ const Manager: React.FC = () => {
     setOpen(true);
   };
 
+  const handleAddTask = () => {
+    setTypeForm(TypeForm.AddTask);
+    setOpen(true);
+  };
+
   const closeModal = () => {
     setOpen(false);
     setTypeForm(null);
-    setUserData(null);
+    // setUserData(null);
+    setDataEdit(null);
   };
 
   React.useEffect(() => {
@@ -142,7 +168,7 @@ const Manager: React.FC = () => {
 
         <Grid
           item
-          xs={currentUser ? (currentUser["role"] === "admin" ? 6 : 12) : 12}
+          xs={currentUser ? (currentUser["role"] === "admin" ? 8 : 12) : 12}
         >
           <Box
             component="div"
@@ -155,40 +181,55 @@ const Manager: React.FC = () => {
           >
             <h2 className="title-h3 title-h3_mr title-h3_center">Tasks</h2>
 
-            <Button variant="contained">
+            <Button variant="contained" onClick={handleAddTask}>
               <PlaylistAddIcon />
             </Button>
           </Box>
-          <ul className="list">
-            {tasks.map((task: Task) => (
-              <li key={task.id}>
-                <div onClick={() => console.log(task.id)}>{task.name}</div>
+          
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
 
-                <div>
-                  <IconButton
-                    onClick={() => handleEditUser(task.id)}
-                    aria-label="edit"
-                    size="small"
-                  >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
-
-                  <IconButton
-                    onClick={() => dispatch(deleteUser(task.id))}
-                    aria-label="delete"
-                    size="small"
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </div>
-              </li>
-            ))}
-          </ul>
+            <tbody>
+              {tasks.map((task: Task) => (
+                <tr key={task.id}>
+                  <td>{task.name}</td>
+                  <td>{task.deadline}</td>
+                  <td>{task.status}</td>
+                  <td>
+                    <IconButton
+                      onClick={() => handleEditTask(task.id)}
+                      aria-label="edit"
+                      size="small"
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </td>
+                  <td>
+                    <IconButton
+                      onClick={() => dispatch(deleteTask(task.id))}
+                      aria-label="delete"
+                      size="small"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Grid>
       </Grid>
 
       <ModalWindow open={open} handleClose={closeModal}>
-        <FormWrapper type={typeForm} data={userData} handleClose={closeModal} />
+        <FormWrapper type={typeForm} data={dataEdit} handleClose={closeModal} />
       </ModalWindow>
     </div>
   );

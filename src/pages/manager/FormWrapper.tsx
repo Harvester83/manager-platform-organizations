@@ -1,24 +1,38 @@
 import React from "react";
-import { TypeForm } from "./Manager";
+import { DataEdit, TypeForm } from "./Manager";
 import { User } from "../../store/user/slice";
 import { Task } from "../../store/task/slice";
 import { UserEditForm } from "./UserEditForm";
 import { UserAddForm } from "./UserAddForm";
+import { TaskAddForm } from "./TaskAddForm";
 
 interface FormWrapperProps {
   type: TypeForm | null;
-  data?: User | Task | null;
+  data?: DataEdit | null;
   handleClose: () => void;
 }
 
-const FormWrapper: React.FC<FormWrapperProps> = ({ type, data, handleClose }) => {
+const FormWrapper: React.FC<FormWrapperProps> = ({
+  type,
+  data,
+  handleClose,
+}) => {
   switch (type) {
     case TypeForm.EditUser:
-      return <UserEditForm handleClose={handleClose} user={data as User} />;
+      return (
+        <UserEditForm
+          handleClose={handleClose}
+          user={data?.userEditData as User}
+        />
+      );
       break;
 
     case TypeForm.AddUser:
       return <UserAddForm handleClose={handleClose} />;
+      break;
+
+    case TypeForm.AddTask:
+      return <TaskAddForm handleClose={handleClose} />;
       break;
 
     default:

@@ -1,8 +1,8 @@
-//import React from "react";
+import React from "react";
 import { Button, TextField } from "@mui/material";
 import { Formik, Form } from "formik";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { User, addUser } from "../../store/user/slice";
+import { addUser } from "../../store/user/slice";
 
 interface FormValue {
   username: string;
