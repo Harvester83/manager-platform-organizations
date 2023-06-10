@@ -39,7 +39,7 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
 
   const handleSubmit = (values: FormValue) => {
     const user = mockUsers.find(
-      (user) => user.username === "rr" && user.password === "123456"
+      (user) => user.username === "Romo" && user.password === "123456"
     );
 
     if (user) {

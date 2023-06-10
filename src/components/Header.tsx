@@ -1,8 +1,34 @@
 import React from "react";
 import { Box, Button, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../store";
+import { CurrentUser } from "../store/currentUser/slice";
 
 const Header = () => {
+  const currentUser: CurrentUser | null = useAppSelector(
+    (state) => state.currentUser
+  );
+
+  const UserTitle = () => {
+    if (!currentUser) {
+      return <></>;
+    }
+    
+    if (currentUser["role"] === "admin") {
+      return (
+        <h2 className="title-h2">
+          Organization name: {currentUser["organization_name"]}
+        </h2>
+      );
+    }
+
+    if (currentUser["role"] === "user") {
+      return <h2 className="title-h2">User: {currentUser["username"]}</h2>;
+    }
+
+    return <></>;
+  };
+
   return (
     <Box
       component="header"
@@ -10,7 +36,7 @@ const Header = () => {
     >
       <Grid container spacing={2}>
         <Grid item xs={6} sx={{ display: "flex", alignItems: "center" }}>
-          <h2 className="title-h2">Organization name: Guba.</h2>
+          <UserTitle />
         </Grid>
 
         <Grid item xs={6}>

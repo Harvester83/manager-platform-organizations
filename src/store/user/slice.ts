@@ -78,33 +78,24 @@ export const UserSlice = createSlice({
         role: string;
       }>
     ) => {
-      const {
-        id,
-        organization_id,
-        organization_name,
-        phone,
-        address,
-        username,
-        lastName,
-        email,
-        password,
-        role,
-      } = action.payload;
-      const userIndex = state.users.findIndex((user) => user.id === id);
-      if (userIndex !== -1) {
-        state.users[userIndex] = {
-          id,
-          organization_id,
-          organization_name,
-          phone,
-          address,
-          username,
-          lastName,
-          email,
-          password,
-          role,
-        };
-      }
+      const userIndex = state.users.findIndex(
+        (user) => user.id === action.payload.id
+      );
+
+      console.log('redux', action.payload.id, action.payload.username);
+
+      state.users[userIndex] = {
+        id: action.payload.id,
+        organization_id: action.payload.organization_id,
+        organization_name: action.payload.organization_name,
+        phone: action.payload.phone,
+        address: action.payload.address,
+        username: action.payload.username,
+        lastName: action.payload.lastName,
+        email: action.payload.email,
+        password: action.payload.password,
+        role: action.payload.role,
+      };
     },
   },
 });

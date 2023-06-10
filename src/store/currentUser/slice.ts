@@ -19,10 +19,7 @@ export const CurrentUserSlice = createSlice({
   initialState,
 
   reducers: {
-    setCurrentUser: (
-      state,
-      action: PayloadAction<CurrentUser | null | any>
-    ) => {
+    setCurrentUser: (_, action: PayloadAction<CurrentUser | null | any>) => {
       return action.payload !== null ? action.payload : initialState;
     },
   },

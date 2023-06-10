@@ -1,9 +1,8 @@
 import { Button, TextField } from "@mui/material";
 import { Formik, Form } from "formik";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { User, addUser } from "../../store/user/slice";
+import { User, editUser } from "../../store/user/slice";
 import { useFormik } from "formik";
-import Yup from "yup";
 
 interface FormValue {
   username: string;
@@ -14,38 +13,46 @@ interface FormValue {
 
 interface UserEditFormProps {
   handleClose: () => void;
-  editUser: User | null;
+  user: User | null;
 }
-
-// Define the Yup schema
-// const SignupSchema = Yup.object().shape({
-//   username: Yup.string().required('Username is required'),
-// });
-
-// // Validation function
-// const validateForm = async (values: any) => {
-//   try {
-//     await SignupSchema.validate(values, { abortEarly: false });
-//   } catch (errors) {
-//     const validationErrors = {};
-//     errors.inner.forEach((error) => {
-//       validationErrors[error.path] = error.message;
-//     });
-//     return validationErrors;
-//   }
-// };
 
 export const UserEditForm: React.FC<UserEditFormProps> = ({
   handleClose,
-  editUser,
+  user,
 }) => {
   const formik = useFormik({
     initialValues: {
-      username: editUser?.username,
+      username: user?.username,
+      lastName: user?.lastName,
+      email: user?.email,
+      password: user?.password,
     },
 
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: (values) => handleSubmit(values as FormValue),
+
+    validate: (values) => {
+      const errors: Partial<FormValue> = {};
+      if (!values.username) {
+        errors.username = "Username is required!";
+      }
+
+      if (!values.lastName) {
+        errors.lastName = "Last name is required!";
+      }
+
+      if (!values.email) {
+        errors.email = "Email is required!";
+      } else if (
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+      ) {
+        errors.email = "Invalid email address!";
+      }
+
+      if ((values.password as string).length < 6) {
+        errors.password = "Password must be at least 6 characters long";
+      }
+
+      return errors;
     },
   });
 
@@ -63,106 +70,114 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({
     return null;
   }
 
-  const handleChange = () => {
-    console.log(1);
-  };
-
   const handleSubmit = (values: FormValue) => {
-    //console.log(values);
+    console.log("handleSubmit", values);
+
     dispatch(
-      addUser({
-        id: Date.now(),
-        organization_id: currentUser["organization_id"],
-        organization_name: currentUser["organization_name"],
-        phone: null,
-        address: null,
+      editUser({
+        id: user?.id as number,
+        organization_id: user?.organization_id as number,
+        organization_name: user?.organization_name as string,
+        phone: user?.phone as string,
+        address: user?.address as string,
         username: values.username,
         lastName: values.lastName,
         email: values.email,
         password: values.password,
-        role: "user",
+        role: user?.role as string,
       })
     );
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      // validate={validateForm}
-      validationSchema={Yup.object().shape({
-        username: Yup.string().required("Username is required"),
-      })}
-      onSubmit={(values) => handleSubmit(values)}
-    >
-      {({ errors, isValid, dirty, handleBlur }) => (
-        <Form onSubmit={formik.handleSubmit}>
-          <TextField
-            error={!!errors.username && !dirty}
-            onBlur={handleBlur}
-            onChange={formik.handleChange}
-            value={formik.values.username}
-            id="username"
-            name="username"
-            placeholder="Username"
-            className="input-wrapper"
-            label="Username"
-            type="text"
-            helperText={!!errors.username && !dirty ? errors.username : ""}
-          />
+    <>
+      <h3 className="title-h3 title-h3_mb">Edit User</h3>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {({ handleBlur, dirty }) => (
+          <Form onSubmit={formik.handleSubmit}>
+            <TextField
+              error={!formik.values.username && !dirty}
+              onBlur={handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.username}
+              id="username"
+              name="username"
+              placeholder="Username"
+              className="input-wrapper"
+              label="Username"
+              type="text"
+              helperText={
+                !formik.values.username && !dirty
+                  ? formik.errors.username
+                  : null
+              }
+            />
 
-          {/* <TextField
-            error={!!errors.lastName && !dirty}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            id="lastName"
-            name="lastName"
-            placeholder="Last name"
-            className="input-wrapper"
-            label="Last Name"
-            type="text"
-            helperText={!!errors.lastName && !dirty ? errors.lastName : ""}
-          />
+            <TextField
+              error={!formik.values.lastName && !dirty}
+              onBlur={handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.lastName}
+              id="lastName"
+              name="lastName"
+              placeholder="Last name"
+              className="input-wrapper"
+              label="Last Name"
+              type="text"
+              helperText={
+                !formik.values.lastName && !dirty
+                  ? formik.errors.lastName
+                  : null
+              }
+            />
 
-          <TextField
-            error={!!errors.email && !dirty}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            id="email"
-            name="email"
-            placeholder="Email"
-            className="input-wrapper"
-            label="Email"
-            type="email"
-            helperText={!!errors.email && !dirty ? errors.email : ""}
-          />
+            <TextField
+              error={!formik.values.email && !dirty}
+              onBlur={handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.email}
+              id="email"
+              name="email"
+              placeholder="Email"
+              className="input-wrapper"
+              label="Email"
+              type="email"
+              helperText={
+                !formik.values.email && !dirty ? formik.errors.email : null
+              }
+            />
 
-          <TextField
-            error={!!errors.password && !isValid && !dirty}
-            onBlur={handleBlur}
-            onChange={handleChange}
-            id="password"
-            name="password"
-            className="input-wrapper"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            helperText={!!errors.password && !dirty ? errors.password : ""}
-          /> */}
+            <TextField
+              error={!formik.values.password && !dirty}
+              onBlur={handleBlur}
+              onChange={formik.handleChange}
+              value={formik.values.password}
+              id="password"
+              name="password"
+              className="input-wrapper"
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              helperText={
+                !formik.values.password && !dirty ? formik.errors.password : ""
+              }
+            />
 
-          <Button
-            style={{ marginRight: 10 }}
-            type="submit"
-            variant="contained"
-            disabled={isValid && dirty ? false : true}
-          >
-            {editUser ? "Edit" : "Add User"}
-          </Button>
+            <Button
+              style={{ marginRight: 10 }}
+              type="submit"
+              variant="contained"
+              disabled={formik.isValid && formik.dirty ? false : true}
+            >
+              Edit
+            </Button>
 
-          <Button type="button" variant="contained" onClick={handleClose}>
-            Close
-          </Button>
-        </Form>
-      )}
-    </Formik>
+            <Button type="button" variant="contained" onClick={handleClose}>
+              Close
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 };

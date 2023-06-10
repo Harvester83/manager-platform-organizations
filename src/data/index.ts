@@ -5,10 +5,10 @@ export const mockUsers = [
     organization_name: "GasCompany",
     phone: "+709289028",
     address: "Narimanov district",
-    username: "Rashad",
-    email: "rashad@gmail.com",
-    password: "r123456",
-    role: "admin",
+    username: "Jhon",
+    email: "jhon@gmail.com",
+    password: "123456",
+    role: "user",
     lastName: "Surname1",
   },
   {
@@ -17,10 +17,10 @@ export const mockUsers = [
     organization_name: "TechSolutions",
     phone: "+712345678",
     address: "Central district",
-    username: "rr",
-    email: "john@gmail.com",
+    username: "Romo",
+    email: "romo@gmail.com",
     password: "123456",
-    role: "user",
+    role: "admin",
     lastName: "Surname2",
   },
   {
@@ -123,7 +123,8 @@ export const mockUsers = [
 
 export const mockTasks = [
   {
-    id: 1,
+    id: 11,
+    task_organization_id: 23,
     name: "Building area",
     description: "Building area description something...",
     deadline: "",
@@ -131,7 +132,8 @@ export const mockTasks = [
     employee_assigned: [24],
   },
   {
-    id: 2,
+    id: 12,
+    task_organization_id: 24,
     name: "Project Management",
     description: "Project Management description something...",
     deadline: "2023-06-30",
@@ -139,7 +141,8 @@ export const mockTasks = [
     employee_assigned: [18, 24],
   },
   {
-    id: 3,
+    id: 13,
+    task_organization_id: 24,
     name: "Marketing Campaign",
     description: "Marketing Campaign description something...",
     deadline: "2023-07-15",
@@ -147,7 +150,8 @@ export const mockTasks = [
     employee_assigned: [12, 18, 24],
   },
   {
-    id: 4,
+    id: 14,
+    task_organization_id: 24,
     name: "Product Development",
     description: "Product Development description something...",
     deadline: "2023-08-31",
@@ -156,6 +160,7 @@ export const mockTasks = [
   },
   {
     id: 5,
+    task_organization_id: 24,
     name: "Sales Strategy",
     description: "Sales Strategy description something...",
     deadline: "2023-07-31",
@@ -164,6 +169,7 @@ export const mockTasks = [
   },
   {
     id: 6,
+    task_organization_id: 24,
     name: "Customer Support",
     description: "Customer Support description something...",
     deadline: "",
@@ -172,6 +178,7 @@ export const mockTasks = [
   },
   {
     id: 7,
+    task_organization_id: 24,
     name: "Quality Assurance",
     description: "Quality Assurance description something...",
     deadline: "2023-08-15",
@@ -180,6 +187,7 @@ export const mockTasks = [
   },
   {
     id: 8,
+    task_organization_id: 24,
     name: "Research and Development",
     description: "Research and Development description something...",
     deadline: "2023-09-30",
@@ -188,6 +196,7 @@ export const mockTasks = [
   },
   {
     id: 9,
+    task_organization_id: 24,
     name: "Financial Analysis",
     description: "Financial Analysis description something...",
     deadline: "2023-07-31",
@@ -196,6 +205,7 @@ export const mockTasks = [
   },
   {
     id: 10,
+    task_organization_id: 23,
     name: "Event Planning",
     description: "Event Planning description something...",
     deadline: "2023-08-15",

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Grid, TextField } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 //import { Delete, AddIcon } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,19 +7,30 @@ import EditIcon from "@mui/icons-material/Edit";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { mockUsers } from "../../data";
 import { User, addUser, deleteUser, saveUsers } from "../../store/user/slice";
+import { Task, saveTasks } from "../../store/task/slice";
 import ModalWindow from "../../components/ModalWindow";
 import { UserEditForm } from "./UserEditForm";
-import { UserForm } from "./UserForm";
+import { UserAddForm } from "./UserAddForm";
+import { mockUsers, mockTasks } from "../../data";
+import FormWrapper from "./FormWrapper";
+
+export enum TypeForm {
+  EditUser,
+  AddUser,
+  EditTask,
+  AddTask,
+}
 
 const Manager: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.currentUser);
   const employees = useAppSelector((state) => state.user.users);
+  const tasks = useAppSelector((state) => state.task.tasks);
 
   const [open, setOpen] = React.useState(false);
-  const [editUser, setEditUser] = React.useState<User | null>(null);
+  const [typeForm, setTypeForm] = React.useState<TypeForm | null>(null);
+  const [userData, setUserData] = React.useState<User | null>(null);
 
   const handleEditUser = (id: number) => {
     const editUserData = employees.find((employee: User) => employee.id === id);
@@ -27,16 +38,20 @@ const Manager: React.FC = () => {
       return;
     }
 
-    setEditUser(editUserData);
+    setUserData(editUserData);
+    setTypeForm(TypeForm.EditUser);
     setOpen(true);
   };
 
-  const handleClickOpen = () => {
+  const handleAddUser = () => {
+    setTypeForm(TypeForm.AddUser);
     setOpen(true);
   };
 
   const closeModal = () => {
     setOpen(false);
+    setTypeForm(null);
+    setUserData(null);
   };
 
   React.useEffect(() => {
@@ -48,7 +63,14 @@ const Manager: React.FC = () => {
       (user) => user.organization_id === currentUser["organization_id"]
     );
 
+    const tasksOrganization = mockTasks.filter(
+      (task) => task.task_organization_id === currentUser["organization_id"]
+    );
+
+    console.log(tasksOrganization);
+
     dispatch(saveUsers(employeesOrganization));
+    dispatch(saveTasks(tasksOrganization));
   }, [currentUser, dispatch]);
 
   return (
@@ -62,53 +84,66 @@ const Manager: React.FC = () => {
           justifyContent: "space-between",
         }}
       >
-        <Grid item xs={4}>
-          <Box
-            component="div"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-            }}
-          >
-            <h2 className="title-h3 title-h3_mr title-h3_center">Employees</h2>
+        {currentUser ? (
+          currentUser["role"] === "admin" ? (
+            <Grid item xs={4}>
+              <Box
+                component="div"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "20px",
+                }}
+              >
+                <h2 className="title-h3 title-h3_mr title-h3_center">
+                  Employees
+                </h2>
 
-            <Button onClick={handleClickOpen} variant="contained">
-              <PersonAddIcon />
-            </Button>
-          </Box>
+                <Button onClick={handleAddUser} variant="contained">
+                  <PersonAddIcon />
+                </Button>
+              </Box>
 
-          <ul className="list">
-            {employees?.map((employee) => (
-              <li key={employee.id}>
-                <div onClick={() => console.log(employee.id)}>
-                  {`${employee.username} ${employee.lastName}`}
-                </div>
+              <ul className="list">
+                {employees?.map((employee) => (
+                  <li key={employee.id}>
+                    <div onClick={() => console.log(employee.id)}>
+                      {`${employee.username} ${employee.lastName}`}
+                    </div>
 
-                <div>
-                  <IconButton
-                    onClick={() => handleEditUser(employee.id)}
-                    aria-label="edit"
-                    size="small"
-                  >
-                    <EditIcon fontSize="small" />
-                  </IconButton>
+                    <div>
+                      <IconButton
+                        onClick={() => handleEditUser(employee.id)}
+                        aria-label="edit"
+                        size="small"
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
 
-                  <IconButton
-                    onClick={() => dispatch(deleteUser(employee.id))}
-                    aria-label="delete"
-                    size="small"
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Grid>
+                      <IconButton
+                        onClick={() => dispatch(deleteUser(employee.id))}
+                        aria-label="delete"
+                        size="small"
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </Grid>
+          ) : (
+            <></>
+          )
+        ) : (
+          <></>
+        )}
 
-        <Grid item xs={6}>
+        <Grid
+          item
+          xs={currentUser ? (currentUser["role"] === "admin" ? 6 : 12) : 12}
+        >
           <Box
             component="div"
             sx={{
@@ -125,26 +160,35 @@ const Manager: React.FC = () => {
             </Button>
           </Box>
           <ul className="list">
-            <li>
-              <div onClick={() => console.log("task")}>
-                Employee work schedule
-              </div>
-              <IconButton aria-label="delete" size="small">
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </li>
+            {tasks.map((task: Task) => (
+              <li key={task.id}>
+                <div onClick={() => console.log(task.id)}>{task.name}</div>
+
+                <div>
+                  <IconButton
+                    onClick={() => handleEditUser(task.id)}
+                    aria-label="edit"
+                    size="small"
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+
+                  <IconButton
+                    onClick={() => dispatch(deleteUser(task.id))}
+                    aria-label="delete"
+                    size="small"
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              </li>
+            ))}
           </ul>
         </Grid>
       </Grid>
 
       <ModalWindow open={open} handleClose={closeModal}>
-        <div className="modal-content">
-          {editUser ? (
-            <UserEditForm handleClose={closeModal} editUser={editUser} />
-          ) : (
-            <UserForm handleClose={closeModal} />
-          )}
-        </div>
+        <FormWrapper type={typeForm} data={userData} handleClose={closeModal} />
       </ModalWindow>
     </div>
   );
