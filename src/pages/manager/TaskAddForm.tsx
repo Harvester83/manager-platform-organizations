@@ -7,6 +7,7 @@ import DateView from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
 import moment from "moment";
+import { User } from "../../store/user/slice";
 
 interface FormValue {
   name: string;
@@ -30,6 +31,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
   };
 
   const dispatch = useAppDispatch();
+  const employees = useAppSelector((state) => state.user.users);
 
   const validate = (values: FormValue) => {
     const errors: Partial<FormValue> = {};
@@ -54,7 +56,6 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
   };
 
   const handleSubmit = (values: FormValue) => {
-    //console.log(2, values);
     console.log("values: ", {
       id: Date.now(),
       name: values.name,
@@ -62,20 +63,20 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
       description: values.description,
       deadline: moment(values.deadline).format("DD.MM.YYYY"),
       status: values.status,
-      employee_assigned: values.employee_assigned,
+      employee_assigned: [Number(values.employee_assigned)],
     });
 
-    // dispatch(
-    //   addTask({
-    //     id: Date.now(),
-    //     name: values.name,
-    //     task_organization_id: Date.now() * 2,
-    //     description: values.description,
-    //     deadline: moment(values.deadline).format("DD.MM.YYYY"),
-    //     status: values.status,
-    //     employee_assigned: values.employee_assigned,
-    //   })
-    // );
+    dispatch(
+      addTask({
+        id: Date.now(),
+        name: values.name,
+        task_organization_id: Date.now() * 2,
+        description: values.description,
+        deadline: moment(values.deadline).format("DD.MM.YYYY"),
+        status: values.status,
+        employee_assigned: values.employee_assigned,
+      })
+    );
   };
 
   return (
@@ -149,14 +150,19 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
               />
             </div>
 
-            {/* <div className="select-wrapper">
-              <Field as="select" name="status" id="status">
-                <option value="planning">Jhon Uik</option>
-                <option value="inProgress">In Progress</option>
-                <option value="done">Done</option>
+            <div className="select-wrapper">
+              <Field
+                as="select"
+                name="employee_assigned"
+                id="employee_assigned"
+              >
+                {employees.map((employee: User) => (
+                  <option value={employee.id}>
+                    {employee.username} {employee.lastName}
+                  </option>
+                ))}
               </Field>
-              <ErrorMessage name="status" component="div" />
-            </div> */}
+            </div>
 
             <div className="formpicker-wrapper">
               <Field
@@ -194,7 +200,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
               style={{ marginRight: 10 }}
               type="submit"
               variant="contained"
-              //disabled={isValid && dirty ? false : true}
+              disabled={isValid && dirty ? false : true}
             >
               Add Task
             </Button>
