@@ -112,6 +112,13 @@ header {
     border: 1px solid #c4c4c4;
     resize: none;
   }
+
+  .error {
+    border: 1px solid #d32f2f;
+    &::placeholder {
+      color: #d32f2f;
+    }
+  }
 }
 
 .select-wrapper {
@@ -135,10 +142,20 @@ header {
       }
     }
   }
+  .error {
+    border: 1px solid #d32f2f;
+    color: #d32f2f;
+  }
 }
 
 .formpicker-wrapper {
   margin-bottom: 20px;
+  .error {
+    border: 1px solid #d32f2f;
+    &::placeholder {
+      color: #d32f2f;
+    }
+  }
 }
 
 .date-view {
@@ -163,12 +180,19 @@ header {
   padding: 16.5px 14px;
 }
 
-
-
-
-
-
-
+.error-message {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.66;
+  letter-spacing: 0.03333em;
+  text-align: left;
+  margin-top: 3px;
+  margin-right: 14px;
+  margin-bottom: 0;
+  margin-left: 14px;
+  color: #d32f2f;
+}
 
 .table {
   width: 100%;

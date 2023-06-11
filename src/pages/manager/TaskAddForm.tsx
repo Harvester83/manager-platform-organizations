@@ -31,6 +31,28 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
 
   const dispatch = useAppDispatch();
 
+  const validate = (values: FormValue) => {
+    const errors: Partial<FormValue> = {};
+
+    if (!values.name) {
+      errors.name = "Name is required";
+    }
+
+    if (!values.status) {
+      errors.status = "Status is required";
+    }
+
+    if (!values.description) {
+      errors.description = "Description is required";
+    }
+
+    if (!values.deadline) {
+      errors.deadline = "Deadline is required";
+    }
+
+    return errors;
+  };
+
   const handleSubmit = (values: FormValue) => {
     //console.log(2, values);
     console.log("values: ", {
@@ -62,7 +84,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
 
       <Formik
         initialValues={initialValues}
-        //validate={validate}
+        validate={validate}
         onSubmit={(values) => handleSubmit(values)}
       >
         {({
@@ -94,29 +116,54 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
                 name="description"
                 rows={10}
                 cols={50}
+                placeholder="Write task description"
+                className={errors.description && "error"}
+              />
+
+              <ErrorMessage
+                name="description"
+                component={() => (
+                  <p className="error-message">{errors.description}</p>
+                )}
               />
             </div>
 
             <div className="select-wrapper">
-              <Field as="select" name="status" id="status">
+              <Field
+                as="select"
+                name="status"
+                id="status"
+                className={errors.status && "error"}
+              >
                 <option value="planning">Planning</option>
                 <option value="inProgress">In Progress</option>
                 <option value="done">Done</option>
+                <option value="planning">Planning</option>
               </Field>
-              <ErrorMessage name="status" component="div" />
+
+              <ErrorMessage
+                name="status"
+                component={() => (
+                  <p className="error-message">{errors.status}</p>
+                )}
+              />
             </div>
 
-            <div className="select-wrapper">
+            {/* <div className="select-wrapper">
               <Field as="select" name="status" id="status">
                 <option value="planning">Jhon Uik</option>
                 <option value="inProgress">In Progress</option>
                 <option value="done">Done</option>
               </Field>
               <ErrorMessage name="status" component="div" />
-            </div>
+            </div> */}
 
             <div className="formpicker-wrapper">
-              <Field name="deadline" id="deadline">
+              <Field
+                name="deadline"
+                id="deadline"
+                className={errors.deadline && "error"}
+              >
                 {({ form, field }: { form: FormikProps<any>; field: any }) => {
                   const { setFieldValue } = form;
                   const { value, ...rest } = field;
@@ -134,6 +181,13 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
                   );
                 }}
               </Field>
+
+              <ErrorMessage
+                name="deadline"
+                component={() => (
+                  <p className="error-message">{errors.deadline}</p>
+                )}
+              />
             </div>
 
             <Button
