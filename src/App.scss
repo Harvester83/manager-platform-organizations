@@ -114,6 +114,62 @@ header {
   }
 }
 
+.select-wrapper {
+  margin-bottom: 20px;
+  select {
+    width: 100%;
+    height: 56px;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #c4c4c4;
+    resize: none;
+    option {
+      background-color: #f2f2f2;
+      color: #333;
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+.formpicker-wrapper {
+  margin-bottom: 20px;
+}
+
+.date-view {
+  font: inherit;
+  letter-spacing: inherit;
+  color: currentColor;
+  padding: 4px 0 5px;
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  box-sizing: border-box;
+  background: none;
+  height: 1.4375em;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+  display: block;
+  min-width: 0;
+  width: 100%;
+  -webkit-animation-name: mui-auto-fill-cancel;
+  animation-name: mui-auto-fill-cancel;
+  -webkit-animation-duration: 10ms;
+  animation-duration: 10ms;
+  padding: 16.5px 14px;
+}
+
+
+
+
+
+
+
+
 .table {
   width: 100%;
   border-collapse: collapse;

@@ -33,10 +33,6 @@ const Manager: React.FC = () => {
 
   const [open, setOpen] = React.useState(false);
   const [typeForm, setTypeForm] = React.useState<TypeForm | null>(null);
-
-  //const [userData, setUserData] = React.useState<User | null>(null);
-  //const [taskData, setTaskData] = React.useState<Task | null>(null);
-
   const [dataEdit, setDataEdit] = React.useState<DataEdit | null>(null);
 
   const handleEditUser = (id: number) => {
@@ -45,7 +41,6 @@ const Manager: React.FC = () => {
       return;
     }
 
-    // setUserData(editUserData);
     setDataEdit({ userEditData: editUserData, taskEditData: null });
     setTypeForm(TypeForm.EditUser);
     setOpen(true);
@@ -57,7 +52,6 @@ const Manager: React.FC = () => {
       return;
     }
 
-    //setTaskData(editTaskData);
     setDataEdit({ userEditData: null, taskEditData: editTaskData });
     setTypeForm(TypeForm.EditUser);
     setOpen(true);
@@ -76,7 +70,6 @@ const Manager: React.FC = () => {
   const closeModal = () => {
     setOpen(false);
     setTypeForm(null);
-    // setUserData(null);
     setDataEdit(null);
   };
 
@@ -92,8 +85,6 @@ const Manager: React.FC = () => {
     const tasksOrganization = mockTasks.filter(
       (task) => task.task_organization_id === currentUser["organization_id"]
     );
-
-    console.log(tasksOrganization);
 
     dispatch(saveUsers(employeesOrganization));
     dispatch(saveTasks(tasksOrganization));

@@ -1,15 +1,14 @@
 import React from "react";
 import { Button, TextField } from "@mui/material";
-// import Textarea from '@mui/joy/Textarea';
-import TextareaAutosize from "@mui/base/TextareaAutosize";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikProps } from "formik";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { addTask } from "../../store/task/slice";
+import DateView from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import dayjs from "dayjs";
+import moment from "moment";
 
 interface FormValue {
-  //   id: number;
-  //   task_organization_id: number;
-
   name: string;
   description: string;
   deadline: string;
@@ -33,15 +32,24 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
   const dispatch = useAppDispatch();
 
   const handleSubmit = (values: FormValue) => {
+    //console.log(2, values);
+    console.log("values: ", {
+      id: Date.now(),
+      name: values.name,
+      task_organization_id: Date.now() * 2,
+      description: values.description,
+      deadline: moment(values.deadline).format("DD.MM.YYYY"),
+      status: values.status,
+      employee_assigned: values.employee_assigned,
+    });
 
-    console.log(2, values);
     // dispatch(
     //   addTask({
     //     id: Date.now(),
     //     name: values.name,
     //     task_organization_id: Date.now() * 2,
     //     description: values.description,
-    //     deadline: values.deadline,
+    //     deadline: moment(values.deadline).format("DD.MM.YYYY"),
     //     status: values.status,
     //     employee_assigned: values.employee_assigned,
     //   })
@@ -66,7 +74,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
           handleSubmit,
         }) => (
           <Form onSubmit={handleSubmit}>
-            {/* <TextField 
+            <TextField
               error={!!errors.name && !dirty}
               onBlur={handleBlur}
               onChange={handleChange}
@@ -77,10 +85,55 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
               label="Name"
               type="text"
               helperText={!!errors.name && !dirty ? errors.name : ""}
-            /> */}
+            />
 
             <div className="textarea-wrapper">
-              <textarea id="describe" name="describe" placeholder="Describe" rows={10} cols={50} />
+              <Field
+                as="textarea"
+                id="description"
+                name="description"
+                rows={10}
+                cols={50}
+              />
+            </div>
+
+            <div className="select-wrapper">
+              <Field as="select" name="status" id="status">
+                <option value="planning">Planning</option>
+                <option value="inProgress">In Progress</option>
+                <option value="done">Done</option>
+              </Field>
+              <ErrorMessage name="status" component="div" />
+            </div>
+
+            <div className="select-wrapper">
+              <Field as="select" name="status" id="status">
+                <option value="planning">Jhon Uik</option>
+                <option value="inProgress">In Progress</option>
+                <option value="done">Done</option>
+              </Field>
+              <ErrorMessage name="status" component="div" />
+            </div>
+
+            <div className="formpicker-wrapper">
+              <Field name="deadline" id="deadline">
+                {({ form, field }: { form: FormikProps<any>; field: any }) => {
+                  const { setFieldValue } = form;
+                  const { value, ...rest } = field;
+
+                  return (
+                    <DateView
+                      {...field}
+                      {...rest}
+                      selected={value}
+                      className="date-view"
+                      placeholderText="DD.MM.YYYY"
+                      onChange={(val) => setFieldValue("deadline", val)}
+                      dateFormat={"dd.MM.yyyy"}
+                    />
+                  );
+                }}
+              </Field>
             </div>
 
             <Button
@@ -89,7 +142,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
               variant="contained"
               //disabled={isValid && dirty ? false : true}
             >
-              Add User
+              Add Task
             </Button>
 
             <Button type="button" variant="contained" onClick={handleClose}>
