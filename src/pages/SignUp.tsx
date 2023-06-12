@@ -2,46 +2,52 @@ import React from "react";
 import { Button, Grid, TextField } from "@mui/material";
 import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
-import { mockUsers } from "../data";
 import { useAppDispatch } from "../store";
+import { setCurrentUser } from "../store/currentUser/slice";
+import { addUser } from "../store/user/slice";
 
 interface FormValue {
-  organizationName: string;
+  organization_name: string;
   username: string;
+  lastName: string;
+  phone: string;
+  address: string;
+  email: string;
   password: string;
 }
 
 const SignUp = () => {
-  const initialValues: FormValue = { organizationName: "", username: "", password: "" };
+  const initialValues: FormValue = {
+    organization_name: "",
+    username: "",
+    lastName: "",
+    phone: "",
+    address: "",
+    email: "",
+    password: "",
+  };
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const validate = (values: FormValue) => {
     const errors: Partial<FormValue> = {};
 
-    if (values.organizationName) {
-      errors.password = "organizationName is required";
+    if (!values.organization_name) {
+      errors.organization_name = "OrganizationName is required";
     }
 
     if (!values.username) {
+      console.log("username");
       errors.username = "Username is required";
-    } else if (!values.password) {
-      errors.password = "Password is required";
     }
 
-    if (values.password.length < 6) {
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 6) {
       errors.password = "Password must be at least 6 characters long";
     }
 
     return errors;
-  };
-
-  const handleSubmit = (values: FormValue) => {
-    // fix
-    if (values) {
-      //dispatch(setCurrentUser(user));
-      navigate("/manager");
-    }
   };
 
   return (
@@ -60,7 +66,26 @@ const SignUp = () => {
         <Formik
           initialValues={initialValues}
           validate={validate}
-          onSubmit={(values) => handleSubmit(values)}
+          onSubmit={(values) => {
+            console.log(1, values);
+            if (values) {
+              const loginUser = {
+                id: Number(new Date()),
+                organization_id: Number(new Date()),
+                organization_name: values.organization_name,
+                phone: values.phone,
+                address: values.address,
+                username: values.username,
+                lastName: values.lastName,
+                email: values.email,
+                password: values.password,
+                role: "admin",
+              };
+              dispatch(setCurrentUser(loginUser));
+              dispatch(addUser(loginUser));
+              navigate("/");
+            }
+          }}
         >
           {({
             handleChange,
@@ -72,50 +97,79 @@ const SignUp = () => {
           }) => (
             <Form onSubmit={handleSubmit}>
               <TextField
-                error={!!errors.organizationName && !dirty}
+                error={!!errors.organization_name}
                 onBlur={handleBlur}
                 onChange={handleChange}
-                id="input-organization-name"
-                name="organizationName"
-                placeholder="Organization name"
+                id="organization_name"
+                name="organization_name"
+                placeholder="Organization name*"
                 className="input-wrapper"
                 label="Organization name"
                 type="text"
-                helperText={!!errors.organizationName && !dirty ? errors.organizationName : ""}
+                helperText={
+                  errors.organization_name ? errors.organization_name : ""
+                }
               />
 
               <TextField
-                error={!!errors.username && !dirty}
+                error={!!errors.username}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 id="username"
                 name="username"
-                placeholder="Username"
+                placeholder="Username*"
                 className="input-wrapper"
                 label="Username"
                 type="text"
-                helperText={!!errors.username && !dirty ? errors.username : ""}
+                helperText={errors.username ? errors.username : ""}
               />
 
               <TextField
-                error={!!errors.password && !isValid && !dirty}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                id="phone"
+                name="phone"
+                className="input-wrapper"
+                label="Phone"
+                type="tel"
+              />
+
+              <TextField
+                onBlur={handleBlur}
+                onChange={handleChange}
+                id="address"
+                name="address"
+                className="input-wrapper"
+                label="Address"
+                type="text"
+              />
+
+              <TextField
+                onBlur={handleBlur}
+                onChange={handleChange}
+                id="email"
+                name="email"
+                className="input-wrapper"
+                label="Email"
+                type="email"
+              />
+
+              <TextField
+                error={!!errors.password}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 id="password"
                 name="password"
                 className="input-wrapper"
+                placeholder="Password*"
                 label="Password"
                 type="password"
                 autoComplete="current-password"
-                helperText={!!errors.password && !dirty ? errors.password : ""}
+                helperText={errors.password ? errors.password : ""}
               />
 
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={isValid && dirty ? false : true}
-              >
-                Sign in
+              <Button type="submit" variant="contained" disabled={!isValid}>
+                Sign up
               </Button>
             </Form>
           )}

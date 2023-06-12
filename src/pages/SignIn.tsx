@@ -3,7 +3,7 @@ import { Button, Grid, TextField } from "@mui/material";
 import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
 import { mockUsers } from "../data";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import { setCurrentUser } from "../store/currentUser/slice";
 
 interface FormValue {
@@ -12,11 +12,11 @@ interface FormValue {
 }
 
 interface ISignIn {
-  //isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
+const SignIn: React.FC<ISignIn> = () => {
+  const users = useAppSelector((state) => state.user.users);
   const initialValues: FormValue = { username: "", password: "" };
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -25,7 +25,7 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
     const errors: Partial<FormValue> = {};
 
     if (!values.username) {
-      errors.password = "Username is required";
+      errors.username = "Username is required";
     }
 
     if (!values.password) {
@@ -39,13 +39,22 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
 
   const handleSubmit = (values: FormValue) => {
     const user = mockUsers.find(
-      (user) => user.username === "Romo" && user.password === "123456"
+      (user) =>
+        user.username === values.username && user.password === values.password
     );
 
-    if (user) {
+    const curLogin = users.find(
+      (user) =>
+        user.username === values.username && user.password === values.password
+    );
+
+    if (user || curLogin) {
       dispatch(setCurrentUser(user));
       navigate("/manager");
+      return;
     }
+
+    alert("The username or password is incorrect!");
   };
 
   return (
@@ -62,7 +71,7 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
         <h2 className="title-h2 title-h2_mb title-h2_center">Sign In</h2>
         <Formik
           initialValues={initialValues}
-          //validate={validate}
+          validate={validate}
           onSubmit={(values) => handleSubmit(values)}
         >
           {({
@@ -75,7 +84,7 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
           }) => (
             <Form onSubmit={handleSubmit}>
               <TextField
-                error={!!errors.username && !dirty}
+                error={!!errors.username}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 id="username"
@@ -84,11 +93,11 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
                 className="input-wrapper"
                 label="Username"
                 type="text"
-                helperText={!!errors.username && !dirty ? errors.username : ""}
+                helperText={errors.username ? errors.username : ""}
               />
 
               <TextField
-                error={!!errors.password && !isValid && !dirty}
+                error={!!errors.password}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 id="password"
@@ -97,13 +106,13 @@ const SignIn: React.FC<ISignIn> = ({ setIsAuthenticated }) => {
                 label="Password"
                 type="password"
                 autoComplete="current-password"
-                helperText={!!errors.password && !dirty ? errors.password : ""}
+                helperText={errors.password ? errors.password : ""}
               />
 
               <Button
                 type="submit"
                 variant="contained"
-                //disabled={isValid && dirty ? false : true}
+                disabled={!isValid}
               >
                 Sign in
               </Button>

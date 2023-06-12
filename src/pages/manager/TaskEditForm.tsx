@@ -1,10 +1,11 @@
 import { Button, IconButton, TextField } from "@mui/material";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikProps } from "formik";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { User, editUser } from "../../store/user/slice";
 import { useFormik } from "formik";
 import { Task, editTask } from "../../store/task/slice";
 import ClearIcon from "@mui/icons-material/Clear";
+import DateView from "react-datepicker";
 import moment from "moment";
 
 interface FormValue {
@@ -26,7 +27,7 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
 }) => {
   const employees = useAppSelector((state) => state.user.users);
   const tasks = useAppSelector((state) => state.task.tasks);
-  //console.log(tasks);
+  
 
   const formik = useFormik({
     initialValues: {
@@ -45,25 +46,24 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
         errors.name = "Name is required!";
       }
 
-      //   if (!values.lastName) {
-      //     errors.lastName = "Last name is required!";
-      //   }
+      if (!values.description) {
+        errors.description = "Description is required";
+      }
 
-      //   if (!values.email) {
-      //     errors.email = "Email is required!";
-      //   } else if (
-      //     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-      //   ) {
-      //     errors.email = "Invalid email address!";
-      //   }
+      if (!values.status) {
+        errors.status = "Status is required";
+      }
 
-      //   if ((values.password as string).length < 6) {
-      //     errors.password = "Password must be at least 6 characters long";
-      //   }
+      if (!values.deadline) {
+        errors.deadline = "Deadline is required";
+      }
 
       return errors;
     },
   });
+
+  // eslint-disable-next-line no-debugger
+  // debugger;
 
   const initialValues: FormValue = {
     name: "",
@@ -79,6 +79,37 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
   if (!currentUser) {
     return null;
   }
+
+  const handleEditEmployee = (employee: string) => {
+    //const employeeId = Number(employee);
+    //console.log(2, employeeId)
+    //console.log(employeeId, [...formik.values.employee_assigned, employeeId])
+
+    
+
+    const selectedEmployees = formik.values.employee_assigned || []; // Handle null or undefined case
+    const employeeId =  Number(employee); // Example employee ID to add
+    const employeeIds = Array.isArray(selectedEmployees)
+      ? [...selectedEmployees, employeeId]
+      : [selectedEmployees, employeeId];
+
+
+    console.log(employeeIds);
+
+    dispatch(
+        editTask({
+          id: task?.id as number,
+          name: formik.values.name as string,
+          task_organization_id: task?.task_organization_id as number,
+          description: formik.values.description as string,
+          deadline: formik.values.deadline as string,
+          status: formik.values.status as string,
+          employee_assigned: employeeIds,
+        })
+      );
+
+    //console.log(1, formik.values.employee_assigned?.push(employeeId))
+  };
 
   const handleDeleteEmployee = (id: number) => {
     const currentTask = tasks.find((item) => item.id === task?.id);
@@ -120,11 +151,13 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
         description: values.description,
         deadline: moment(values.deadline).format("DD.MM.YYYY"),
         status: values.status,
-        employee_assigned: values.employee_assigned,
+        employee_assigned: [],
       })
     );
   };
 
+  // eslint-disable-next-line no-debugger
+  //debugger;
   return (
     <>
       <h3 className="title-h3 title-h3_mb">Edit User</h3>
@@ -146,6 +179,90 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
                 !formik.values.name && !dirty ? formik.errors.name : null
               }
             />
+
+            <div className="textarea-wrapper">
+              <Field
+                as="textarea"
+                id="description"
+                name="description"
+                onChange={formik.handleChange}
+                value={formik.values.description}
+                rows={10}
+                cols={50}
+                placeholder="Write task description"
+                className={formik.errors.description && "error bb"}
+              />
+              {formik.errors.description && (
+                <p className="error-message">{formik.errors.description}</p>
+              )}
+            </div>
+
+            <div className="select-wrapper">
+              <Field
+                as="select"
+                name="status"
+                onChange={formik.handleChange}
+                value={formik.values.status}
+                id="status"
+                className={formik.errors.status && "error"}
+              >
+                <option value="planning">Planning</option>
+                <option value="inProgress">In Progress</option>
+                <option value="done">Done</option>
+                <option value="planning">Planning</option>
+              </Field>
+
+              {formik.errors.status && (
+                <p className="error-message">{formik.errors.status}</p>
+              )}
+            </div>
+
+            <div className="select-wrapper">
+              <Field
+                as="select"
+                name="employee_assigned"
+                // onChange={(e: any) => formik.setFieldValue("employee_assigned", e.target.value)}
+                onChange={(e: any) => handleEditEmployee(e.target.value)}
+                id="employee_assigned"
+              >
+                {employees.map((employee: User) => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.username} {employee.lastName}
+                  </option>
+                ))}
+              </Field>
+            </div>
+
+            <div className="formpicker-wrapper">
+              <Field
+                name="deadline"
+                onChange={formik.handleChange}
+                value={formik.values.deadline}
+                id="deadline"
+                className={formik.values.deadline && "error"}
+              >
+                {({ form, field }: { form: FormikProps<any>; field: any }) => {
+                  const { setFieldValue } = form;
+                  const { value, ...rest } = field;
+
+                  return (
+                    <DateView
+                      {...field}
+                      {...rest}
+                      selected={value}
+                      className="date-view"
+                      placeholderText="DD.MM.YYYY"
+                      onChange={(val) => setFieldValue("deadline", val)}
+                      dateFormat={"dd.MM.yyyy"}
+                    />
+                  );
+                }}
+              </Field>
+
+              {formik.errors.deadline && (
+                <p className="error-message">{formik.errors.deadline}</p>
+              )}
+            </div>
 
             <div className="window-list">
               <h4>Employee assigned</h4>

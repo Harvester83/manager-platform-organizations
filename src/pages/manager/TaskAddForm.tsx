@@ -39,12 +39,12 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
       errors.name = "Name is required";
     }
 
-    if (!values.status) {
-      errors.status = "Status is required";
-    }
-
     if (!values.description) {
       errors.description = "Description is required";
+    }
+
+    if (!values.status) {
+      errors.status = "Status is required";
     }
 
     if (!values.deadline) {
@@ -65,6 +65,11 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
       employee_assigned: [Number(values.employee_assigned)],
     });
 
+    const selectedEmployees = values.employee_assigned || []; // Handle null or undefined case
+    const employeeIds = Array.isArray(selectedEmployees)
+      ? [...selectedEmployees, Number(values.employee_assigned)]
+      : [selectedEmployees, Number(values.employee_assigned)];
+
     dispatch(
       addTask({
         id: Date.now(),
@@ -73,7 +78,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
         description: values.description,
         deadline: moment(values.deadline).format("DD.MM.YYYY"),
         status: values.status,
-        employee_assigned: values.employee_assigned,
+        employee_assigned: employeeIds,
       })
     );
   };
@@ -156,7 +161,7 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
                 id="employee_assigned"
               >
                 {employees.map((employee: User) => (
-                  <option value={employee.id}>
+                  <option key={employee.id} value={employee.id}>
                     {employee.username} {employee.lastName}
                   </option>
                 ))}

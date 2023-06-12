@@ -17,7 +17,7 @@ export const mockUsers = [
     organization_name: "TechSolutions",
     phone: "+712345678",
     address: "Central district",
-    username: "Romo",
+    username: "admin",
     email: "romo@gmail.com",
     password: "123456",
     role: "admin",

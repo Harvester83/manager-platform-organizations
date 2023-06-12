@@ -75,17 +75,6 @@ const Manager: React.FC = () => {
   };
 
   React.useEffect(() => {
-   
-    // const user = mockUsers.find(
-    //   (user) => user.username === "Romo" && user.password === "123456"
-    // );
-
-    // if (user) {
-    //   dispatch(setCurrentUser(user));
-    // }
-
-    /////////////////
-
     if (!currentUser) {
       return;
     }
@@ -94,7 +83,6 @@ const Manager: React.FC = () => {
       (user) => user.organization_id === currentUser["organization_id"]
     );
 
-    console.log(1)
     const tasksOrganization = mockTasks.filter(
       (task) => task.task_organization_id === currentUser["organization_id"]
     );

@@ -42,9 +42,9 @@ const Header = () => {
         <Grid item xs={6}>
           <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
             <nav className="link-wrapper">
-              <Link className="link" to="/manager">
+              {/* <Link className="link" to="/manager">
                 Manager
-              </Link>
+              </Link> */}
 
               <Link className="link" to="/">
                 SignIn
