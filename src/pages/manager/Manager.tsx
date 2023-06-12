@@ -12,6 +12,7 @@ import { Task, saveTasks, deleteTask } from "../../store/task/slice";
 import ModalWindow from "../../components/ModalWindow";
 import { mockUsers, mockTasks } from "../../data";
 import FormWrapper from "./FormWrapper";
+import { setCurrentUser } from "../../store/currentUser/slice";
 
 export enum TypeForm {
   EditUser,
@@ -53,7 +54,7 @@ const Manager: React.FC = () => {
     }
 
     setDataEdit({ userEditData: null, taskEditData: editTaskData });
-    setTypeForm(TypeForm.EditUser);
+    setTypeForm(TypeForm.EditTask);
     setOpen(true);
   };
 
@@ -74,6 +75,17 @@ const Manager: React.FC = () => {
   };
 
   React.useEffect(() => {
+   
+    // const user = mockUsers.find(
+    //   (user) => user.username === "Romo" && user.password === "123456"
+    // );
+
+    // if (user) {
+    //   dispatch(setCurrentUser(user));
+    // }
+
+    /////////////////
+
     if (!currentUser) {
       return;
     }
@@ -82,6 +94,7 @@ const Manager: React.FC = () => {
       (user) => user.organization_id === currentUser["organization_id"]
     );
 
+    console.log(1)
     const tasksOrganization = mockTasks.filter(
       (task) => task.task_organization_id === currentUser["organization_id"]
     );

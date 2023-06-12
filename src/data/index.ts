@@ -73,7 +73,7 @@ export const mockUsers = [
   },
   {
     id: 7,
-    organization_id: 10,
+    organization_id: 24,
     organization_name: "FitnessCenter",
     phone: "+703333333",
     address: "Gym Street",
@@ -97,7 +97,7 @@ export const mockUsers = [
   },
   {
     id: 9,
-    organization_id: 3,
+    organization_id: 24,
     organization_name: "HealthClinic",
     phone: "+706666666",
     address: "Medical Avenue",
@@ -124,12 +124,12 @@ export const mockUsers = [
 export const mockTasks = [
   {
     id: 11,
-    task_organization_id: 23,
+    task_organization_id: 24,
     name: "Building area",
     description: "Building area description something...",
     deadline: "25.06.2023",
     status: "Done",
-    employee_assigned: [24],
+    employee_assigned: [3],
   },
   {
     id: 12,
@@ -138,7 +138,7 @@ export const mockTasks = [
     description: "Project Management description something...",
     deadline: "30.06.2023",
     status: "In Progress",
-    employee_assigned: [18, 24],
+    employee_assigned: [2, 3],
   },
   {
     id: 13,
@@ -147,7 +147,7 @@ export const mockTasks = [
     description: "Marketing Campaign description something...",
     deadline: "12.06.2023",
     status: "Pending",
-    employee_assigned: [12, 18, 24],
+    employee_assigned: [7, 9],
   },
   {
     id: 14,
@@ -156,7 +156,7 @@ export const mockTasks = [
     description: "Product Development description something...",
     deadline: "11.05.2023",
     status: "In Progress",
-    employee_assigned: [5, 24],
+    employee_assigned: [6, 8],
   },
   {
     id: 5,
@@ -165,7 +165,7 @@ export const mockTasks = [
     description: "Sales Strategy description something...",
     deadline: "2023-07-31",
     status: "Pending",
-    employee_assigned: [8, 18],
+    employee_assigned: [8],
   },
   {
     id: 6,
@@ -174,7 +174,7 @@ export const mockTasks = [
     description: "Customer Support description something...",
     deadline: "",
     status: "Done",
-    employee_assigned: [3, 5, 24],
+    employee_assigned: [3, 5, 9],
   },
   {
     id: 7,
@@ -183,7 +183,7 @@ export const mockTasks = [
     description: "Quality Assurance description something...",
     deadline: "2023-08-15",
     status: "In Progress",
-    employee_assigned: [10, 12, 24],
+    employee_assigned: [9],
   },
   {
     id: 8,
@@ -192,7 +192,7 @@ export const mockTasks = [
     description: "Research and Development description something...",
     deadline: "2023-09-30",
     status: "Pending",
-    employee_assigned: [3, 10, 18],
+    employee_assigned: [3],
   },
   {
     id: 9,
@@ -201,7 +201,7 @@ export const mockTasks = [
     description: "Financial Analysis description something...",
     deadline: "2023-07-31",
     status: "In Progress",
-    employee_assigned: [5, 10, 18, 24],
+    employee_assigned: [2, 3, 5, 7, 9],
   },
   {
     id: 10,
@@ -210,6 +210,6 @@ export const mockTasks = [
     description: "Event Planning description something...",
     deadline: "2023-08-15",
     status: "Pending",
-    employee_assigned: [12, 18],
+    employee_assigned: [6],
   },
 ];

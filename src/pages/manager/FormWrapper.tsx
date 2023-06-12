@@ -5,6 +5,7 @@ import { Task } from "../../store/task/slice";
 import { UserEditForm } from "./UserEditForm";
 import { UserAddForm } from "./UserAddForm";
 import { TaskAddForm } from "./TaskAddForm";
+import { TaskEditForm } from "./TaskEditForm";
 
 interface FormWrapperProps {
   type: TypeForm | null;
@@ -29,6 +30,15 @@ const FormWrapper: React.FC<FormWrapperProps> = ({
 
     case TypeForm.AddUser:
       return <UserAddForm handleClose={handleClose} />;
+      break;
+
+    case TypeForm.EditTask:
+      return (
+        <TaskEditForm
+          handleClose={handleClose}
+          task={data?.taskEditData as Task}
+        />
+      );
       break;
 
     case TypeForm.AddTask:
