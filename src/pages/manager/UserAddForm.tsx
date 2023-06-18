@@ -34,7 +34,7 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
     const errors: Partial<FormValue> = {};
 
     if (!values.username) {
-      errors.password = "Username is required";
+      errors.username = "Username is required";
     }
 
     if (!values.lastName) {
@@ -49,7 +49,9 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
       errors.email = "Invalid email address";
     }
 
-    if (values.password.length < 6) {
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 6) {
       errors.password = "Password must be at least 6 characters long";
     }
 
@@ -91,7 +93,7 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
         }) => (
           <Form onSubmit={handleSubmit}>
             <TextField
-              error={!!errors.username && !dirty}
+              error={!!errors.username}
               onBlur={handleBlur}
               onChange={handleChange}
               id="username"
@@ -100,11 +102,11 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
               className="input-wrapper"
               label="Username"
               type="text"
-              helperText={!!errors.username && !dirty ? errors.username : ""}
+              helperText={errors.username ? errors.username : ""}
             />
 
             <TextField
-              error={!!errors.lastName && !dirty}
+              error={!!errors.lastName}
               onBlur={handleBlur}
               onChange={handleChange}
               id="lastName"
@@ -113,11 +115,11 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
               className="input-wrapper"
               label="Last Name"
               type="text"
-              helperText={!!errors.lastName && !dirty ? errors.lastName : ""}
+              helperText={errors.lastName ? errors.lastName : ""}
             />
 
             <TextField
-              error={!!errors.email && !dirty}
+              error={!!errors.email}
               onBlur={handleBlur}
               onChange={handleChange}
               id="email"
@@ -126,11 +128,11 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
               className="input-wrapper"
               label="Email"
               type="email"
-              helperText={!!errors.email && !dirty ? errors.email : ""}
+              helperText={errors.email ? errors.email : ""}
             />
 
             <TextField
-              error={!!errors.password && !isValid && !dirty}
+              error={!!errors.password}
               onBlur={handleBlur}
               onChange={handleChange}
               id="password"
@@ -139,7 +141,7 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
               label="Password"
               type="password"
               autoComplete="current-password"
-              helperText={!!errors.password && !dirty ? errors.password : ""}
+              helperText={errors.password ? errors.password : ""}
             />
 
             <Button

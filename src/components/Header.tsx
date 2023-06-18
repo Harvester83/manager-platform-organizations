@@ -1,10 +1,13 @@
 import React from "react";
 import { Box, Button, Grid } from "@mui/material";
-import { Link } from "react-router-dom";
-import { useAppSelector } from "../store";
-import { CurrentUser } from "../store/currentUser/slice";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../store";
+import { CurrentUser, setCurrentUser } from "../store/currentUser/slice";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const currentUser: CurrentUser | null = useAppSelector(
     (state) => state.currentUser
   );
@@ -13,7 +16,7 @@ const Header = () => {
     if (!currentUser) {
       return <></>;
     }
-    
+
     if (currentUser["role"] === "admin") {
       return (
         <h2 className="title-h2">
@@ -29,6 +32,13 @@ const Header = () => {
     return <></>;
   };
 
+  const signout = () => {
+    dispatch(setCurrentUser(null));
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('currentUser');  
+    navigate("/");
+  };
+
   return (
     <Box
       component="header"
@@ -42,13 +52,20 @@ const Header = () => {
         <Grid item xs={6}>
           <Box sx={{ display: "flex", flexDirection: "row-reverse" }}>
             <nav className="link-wrapper">
-              {/* <Link className="link" to="/manager">
-                Manager
-              </Link> */}
+              {currentUser ? (
+                <Button
+                  onClick={signout}
+                  className="link"
+                  style={{ color: "#fff" }}
+                >
+                  SignOut
+                </Button>
+              ) : (
+                <Link className="link" to="/">
+                  SignIn
+                </Link>
+              )}
 
-              <Link className="link" to="/">
-                SignIn
-              </Link>
               <Link className="link" to="/signup">
                 SignUp
               </Link>
