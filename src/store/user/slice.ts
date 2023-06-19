@@ -81,8 +81,6 @@ export const UserSlice = createSlice({
         (user) => user.id === action.payload.id
       );
 
-      console.log('redux', action.payload.id, action.payload.username);
-
       state.users[userIndex] = {
         id: action.payload.id,
         organization_id: action.payload.organization_id,

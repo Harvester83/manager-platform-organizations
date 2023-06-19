@@ -3,6 +3,7 @@ import { Formik, Form } from "formik";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { User, editUser } from "../../store/user/slice";
 import { useFormik } from "formik";
+import { apiUsers } from "../../data/mock";
 
 interface FormValue {
   username: string;
@@ -70,23 +71,31 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({
     return null;
   }
 
-  const handleSubmit = (values: FormValue) => {
-    console.log("handleSubmit", values);
+  const handleSubmit = async (values: FormValue) => {
+    const editedUser = {
+      id: user?.id as number,
+      organization_id: user?.organization_id as number,
+      organization_name: user?.organization_name as string,
+      phone: user?.phone as string,
+      address: user?.address as string,
+      username: values.username,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      role: user?.role as string,
+    };
+    try {
+      const response = await apiUsers.put(`/api/users/${user?.id}`, editedUser, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      });
 
-    dispatch(
-      editUser({
-        id: user?.id as number,
-        organization_id: user?.organization_id as number,
-        organization_name: user?.organization_name as string,
-        phone: user?.phone as string,
-        address: user?.address as string,
-        username: values.username,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password,
-        role: user?.role as string,
-      })
-    );
+      dispatch(editUser(response.data));
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error");
+    }
   };
 
   return (

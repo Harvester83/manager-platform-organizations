@@ -6,12 +6,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import { useAppDispatch, useAppSelector } from "../../store";
-import { User, addUser, deleteUser, saveUsers } from "../../store/user/slice";
-import { Task, deleteTask } from "../../store/task/slice";
+import { User, deleteUser, saveUsers } from "../../store/user/slice";
+import { Task, deleteTask, saveTasks } from "../../store/task/slice";
 import ModalWindow from "../../components/ModalWindow";
 import FormWrapper from "./FormWrapper";
 import { useNavigate } from "react-router";
-import { apiUsers } from "../../data/mock";
+import { apiUsers, apiTasks } from "../../data/mock";
 
 export enum TypeForm {
   EditUser,
@@ -67,6 +67,28 @@ const Manager: React.FC<ManagerProps> = ({ loader }) => {
     setOpen(true);
   };
 
+  const handleDeleteUser = async (id: number) => {
+    try {
+      await apiUsers.delete(`/api/users/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwtToken")}` },
+      });
+      dispatch(deleteUser(id));
+    } catch (error) {
+      throw new Error("deleting failed");
+    }
+  };
+
+  const handleDeleteTask = async (id: number) => {
+    try {
+      await apiTasks.delete(`/api/tasks/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwtToken")}` },
+      });
+      dispatch(deleteTask(id));
+    } catch (error) {
+      throw new Error("deleting failed");
+    }
+  };
+
   const handleAddTask = () => {
     setTypeForm(TypeForm.AddTask);
     setOpen(true);
@@ -79,18 +101,16 @@ const Manager: React.FC<ManagerProps> = ({ loader }) => {
   };
 
   React.useEffect(() => {
-    console.log("Manager useEffect");
-
     if (!currentUser) {
       navigate("/");
       return;
     }
 
     if (currentUser["username"] === "Romo") {
-      const fetchUserData = async () => {
+      const fetchUsersData = async () => {
         try {
-          const users = await apiUsers.get("/users", {
-            params: { organization_id: 24 },
+          const users = await apiUsers.get("/api/users", {
+            params: { organization_id: currentUser["organization_id"] },
           });
           dispatch(saveUsers(users.data.users));
         } catch (error) {
@@ -98,7 +118,19 @@ const Manager: React.FC<ManagerProps> = ({ loader }) => {
         }
       };
 
-      fetchUserData();
+      const fetchTasksData = async () => {
+        try {
+          const tasks = await apiTasks.get("/api/tasks", {
+            params: { organization_id: currentUser["organization_id"] },
+          });
+          dispatch(saveTasks(tasks.data.tasks));
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchUsersData();
+      fetchTasksData();
 
       return;
     }
@@ -148,7 +180,7 @@ const Manager: React.FC<ManagerProps> = ({ loader }) => {
                   <ul className="list">
                     {employees?.map((employee) => (
                       <li key={employee.id}>
-                        <div onClick={() => console.log(employee.id)}>
+                        <div>
                           {`${employee.username} ${employee.lastName}`}
                         </div>
 
@@ -162,7 +194,7 @@ const Manager: React.FC<ManagerProps> = ({ loader }) => {
                           </IconButton>
 
                           <IconButton
-                            onClick={() => dispatch(deleteUser(employee.id))}
+                            onClick={() => handleDeleteUser(employee.id)}
                             aria-label="delete"
                             size="small"
                           >
@@ -228,7 +260,8 @@ const Manager: React.FC<ManagerProps> = ({ loader }) => {
                       </td>
                       <td>
                         <IconButton
-                          onClick={() => dispatch(deleteTask(task.id))}
+                          // onClick={() => dispatch(deleteTask(task.id))}
+                          onClick={() => handleDeleteTask(task.id)}
                           aria-label="delete"
                           size="small"
                         >

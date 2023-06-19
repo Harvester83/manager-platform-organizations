@@ -81,20 +81,11 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
   }
 
   const handleEditEmployee = (employee: string) => {
-    //const employeeId = Number(employee);
-    //console.log(2, employeeId)
-    //console.log(employeeId, [...formik.values.employee_assigned, employeeId])
-
-    
-
     const selectedEmployees = formik.values.employee_assigned || []; // Handle null or undefined case
     const employeeId =  Number(employee); // Example employee ID to add
     const employeeIds = Array.isArray(selectedEmployees)
       ? [...selectedEmployees, employeeId]
       : [selectedEmployees, employeeId];
-
-
-    console.log(employeeIds);
 
     dispatch(
         editTask({
@@ -107,8 +98,6 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
           employee_assigned: employeeIds,
         })
       );
-
-    //console.log(1, formik.values.employee_assigned?.push(employeeId))
   };
 
   const handleDeleteEmployee = (id: number) => {
@@ -116,9 +105,6 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
     const currentTaskEmployee = (
       currentTask?.employee_assigned as number[]
     ).filter((item) => item !== id);
-
-    console.log({ task }, id);
-    console.log(currentTaskEmployee);
 
     dispatch(
       editTask({
@@ -134,15 +120,6 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
   };
 
   const handleSubmit = (values: FormValue) => {
-    console.log("values", {
-      id: task?.id as number,
-      name: values.name,
-      task_organization_id: task?.task_organization_id as number,
-      description: values.description,
-      deadline: values.deadline,
-      status: values.status,
-      employee_assigned: values.employee_assigned,
-    });
     dispatch(
       editTask({
         id: task?.id as number,
@@ -156,8 +133,6 @@ export const TaskEditForm: React.FC<TaskEditFormProps> = ({
     );
   };
 
-  // eslint-disable-next-line no-debugger
-  //debugger;
   return (
     <>
       <h3 className="title-h3 title-h3_mb">Edit User</h3>

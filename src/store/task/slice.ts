@@ -70,8 +70,6 @@ export const TaskSlice = createSlice({
         (task) => task.id === action.payload.id
       );
 
-      //console.log('redux', action.payload);
-
       state.tasks[taskIndex] = {
         id: action.payload.id,
         name: action.payload.name,

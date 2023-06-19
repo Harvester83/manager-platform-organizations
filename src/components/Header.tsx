@@ -3,6 +3,8 @@ import { Box, Button, Grid } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store";
 import { CurrentUser, setCurrentUser } from "../store/currentUser/slice";
+import { saveUsers } from "../store/user/slice";
+import { saveTasks } from "../store/task/slice";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -34,6 +36,8 @@ const Header = () => {
 
   const signout = () => {
     dispatch(setCurrentUser(null));
+    dispatch(saveUsers([]));
+    dispatch(saveTasks([]));
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('currentUser');  
     navigate("/");

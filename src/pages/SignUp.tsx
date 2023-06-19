@@ -4,7 +4,9 @@ import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store";
 import { setCurrentUser } from "../store/currentUser/slice";
-import { addUser } from "../store/user/slice";
+import { addUser, saveUsers } from "../store/user/slice";
+import { apiSignUp } from "../data/mock";
+import { saveTasks } from "../store/task/slice";
 
 interface FormValue {
   organization_name: string;
@@ -16,7 +18,11 @@ interface FormValue {
   password: string;
 }
 
-const SignUp = () => {
+interface SignUpProps {
+  setLoader: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const SignUp: React.FC<SignUpProps> = ({ setLoader }) => {
   const initialValues: FormValue = {
     organization_name: "",
     username: "",
@@ -37,7 +43,6 @@ const SignUp = () => {
     }
 
     if (!values.username) {
-      console.log("username");
       errors.username = "Username is required";
     }
 
@@ -55,28 +60,41 @@ const SignUp = () => {
       errors.email = "Invalid email address";
     }
 
-
     return errors;
   };
 
-  const onSubmit = (values: FormValue) => {
-    console.log(1, values);
-    if (values) {
-      const loginUser = {
-        id: Number(new Date()),
-        organization_id: Number(new Date()),
-        organization_name: values.organization_name,
-        phone: values.phone,
-        address: values.address,
-        username: values.username,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password,
-        role: "admin",
-      };
-      dispatch(setCurrentUser(loginUser));
-      dispatch(addUser(loginUser));
-      navigate("/");
+  const onSubmit = async (values: FormValue) => {
+    dispatch(setCurrentUser(null));
+    dispatch(saveUsers([]));
+    dispatch(saveTasks([]));
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("currentUser");
+
+    const user = {
+      id: Number(new Date()),
+      organization_id: Number(new Date()),
+      organization_name: values.organization_name,
+      phone: values.phone,
+      address: values.address,
+      username: values.username,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      role: "admin",
+    };
+
+    try {
+      setLoader(true);
+      const response = await apiSignUp.post("/api/signup", user);
+      localStorage.setItem("jwtToken", response.data.token);
+      const serializedCurrentUserObject = JSON.stringify(user);
+      localStorage.setItem("currentUser", serializedCurrentUserObject);
+      dispatch(setCurrentUser(user));
+      setLoader(false);
+      navigate("/manager");
+    } catch (error) {
+      console.error(error);
+      throw new Error("SignUp failed");
     }
   };
 
@@ -149,7 +167,7 @@ const SignUp = () => {
               />
 
               <TextField
-              error={!!errors.email}
+                error={!!errors.email}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 id="email"

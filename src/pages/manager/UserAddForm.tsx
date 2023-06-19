@@ -3,6 +3,7 @@ import { Button, TextField } from "@mui/material";
 import { Formik, Form } from "formik";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { addUser } from "../../store/user/slice";
+import { apiUsers } from "../../data/mock";
 
 interface FormValue {
   username: string;
@@ -58,21 +59,30 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
     return errors;
   };
 
-  const handleSubmit = (values: FormValue) => {
-    dispatch(
-      addUser({
-        id: Date.now(),
-        organization_id: currentUser["organization_id"],
-        organization_name: currentUser["organization_name"],
-        phone: null,
-        address: null,
-        username: values.username,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password,
-        role: "user",
-      })
-    );
+  const onSubmit = async (values: FormValue) => {
+    const newUser = {
+      id: Date.now(),
+      organization_id: currentUser["organization_id"],
+      organization_name: currentUser["organization_name"],
+      phone: null,
+      address: null,
+      username: values.username,
+      lastName: values.lastName,
+      email: values.email,
+      password: values.password,
+      role: "user",
+    };
+    try {
+      const response = await apiUsers.post("/api/users", newUser, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      });
+
+      dispatch(addUser(response.data));
+    } catch (error) {
+      throw new Error("Error");
+    }
   };
 
   return (
@@ -81,7 +91,7 @@ export const UserAddForm: React.FC<UserAddFormProps> = ({ handleClose }) => {
       <Formik
         initialValues={initialValues}
         validate={validate}
-        onSubmit={(values) => handleSubmit(values)}
+        onSubmit={onSubmit}
       >
         {({
           handleChange,

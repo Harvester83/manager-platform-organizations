@@ -7,6 +7,7 @@ import DateView from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import { User } from "../../store/user/slice";
+import { apiTasks } from "../../data/mock";
 
 interface FormValue {
   name: string;
@@ -54,33 +55,35 @@ export const TaskAddForm: React.FC<TaskAddFormProps> = ({ handleClose }) => {
     return errors;
   };
 
-  const handleSubmit = (values: FormValue) => {
-    console.log("values: ", {
+  const handleSubmit = async (values: FormValue) => {
+    const selectedEmployees = values.employee_assigned || [];
+    const employeeIds = Array.isArray(selectedEmployees)
+      ? [...selectedEmployees, Number(values.employee_assigned)]
+      : [selectedEmployees, Number(values.employee_assigned)];
+
+    const newTask = {
       id: Date.now(),
       name: values.name,
       task_organization_id: Date.now() * 2,
       description: values.description,
       deadline: moment(values.deadline).format("DD.MM.YYYY"),
       status: values.status,
-      employee_assigned: [Number(values.employee_assigned)],
-    });
+      employee_assigned: employeeIds,
+    };
 
-    const selectedEmployees = values.employee_assigned || []; // Handle null or undefined case
-    const employeeIds = Array.isArray(selectedEmployees)
-      ? [...selectedEmployees, Number(values.employee_assigned)]
-      : [selectedEmployees, Number(values.employee_assigned)];
+    try {
+      const response = await apiTasks.post("/api/users", newTask, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
+      });
 
-    dispatch(
-      addTask({
-        id: Date.now(),
-        name: values.name,
-        task_organization_id: Date.now() * 2,
-        description: values.description,
-        deadline: moment(values.deadline).format("DD.MM.YYYY"),
-        status: values.status,
-        employee_assigned: employeeIds,
-      })
-    );
+      dispatch(addTask(response.data));
+    } catch (error) {
+      throw new Error("Error");
+    }
+
+    dispatch(addTask(newTask));
   };
 
   return (

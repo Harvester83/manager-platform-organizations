@@ -2,61 +2,24 @@ import React from "react";
 import { Button, Grid, TextField } from "@mui/material";
 import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store";
+import { useAppDispatch } from "../store";
 import { setCurrentUser } from "../store/currentUser/slice";
-import axios from "axios";
 import { apiLogin } from "../data/mock";
 
-// const mock = new MockAdapter(axios);
-
-// mock.onPost("/api/login").reply(200, {
-//   token:
-//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-//   user: {
-//     id: 2,
-//     organization_id: 24,
-//     organization_name: "TechSolutions",
-//     phone: "+712345678",
-//     address: "Central district",
-//     username: "Romo",
-//     email: "romo@gmail.com",
-//     password: "123456",
-//     role: "admin",
-//     lastName: "Surname2",
-//   },
-// });
 
 interface FormValue {
   username: string;
   password: string;
 }
 
-interface ISignIn {
+interface ISignInProps {
   setLoader: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SignIn: React.FC<ISignIn> = ({ setLoader }) => {
-  const currentUser = useAppSelector((state) => state.currentUser);
+const SignIn: React.FC<ISignInProps> = ({ setLoader }) => {
   const initialValues: FormValue = { username: "", password: "" };
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  //console.log("SignIn");
-
-  // const serializedCurrentUserObject: string =
-  //   localStorage.getItem("currentUser") ?? "";
-
-  // if (serializedCurrentUserObject) {
-  //   const currentUserObject = JSON.parse(serializedCurrentUserObject as string);
-
-  //   dispatch(setCurrentUser(currentUserObject));
-  //   navigate("/manager");
-  //   return;
-  // }
-
-  // React.useEffect(() => {
-  //   console.log(2);
-  // },[]);
 
   React.useEffect(() => {
     const serializedCurrentUserObject: string =
@@ -82,7 +45,7 @@ const SignIn: React.FC<ISignIn> = ({ setLoader }) => {
 
     if (!values.password) {
       errors.password = "Password is required";
-    } else if (values.password.length < 2) {
+    } else if (values.password.length < 6) {
       errors.password = "Password must be at least 2 characters long";
     }
 
@@ -90,12 +53,9 @@ const SignIn: React.FC<ISignIn> = ({ setLoader }) => {
   };
 
   const handleSubmit = async (values: FormValue) => {
-    setLoader(true);
     try {
+      setLoader(true);
       const response = await apiLogin.post("/api/login", values);
-
-      console.log(response.data.token);
-
       localStorage.setItem("jwtToken", response.data.token);
       const serializedCurrentUserObject = JSON.stringify(response.data.user);
       localStorage.setItem("currentUser", serializedCurrentUserObject);

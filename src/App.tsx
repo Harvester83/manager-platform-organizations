@@ -10,8 +10,7 @@ import { store } from "./store";
 
 function App() {
   const [loader, setLoader] = React.useState(false);
-
-  console.log("App.tsx");
+  
   return (
     <Provider store={store}>
       <BrowserRouter>
@@ -19,7 +18,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route path="/manager" element={<Manager loader={loader} />} />
             <Route path="" element={<SignIn setLoader={setLoader} />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/signup" element={<SignUp setLoader={setLoader}/>} />
           </Route>
         </Routes>
       </BrowserRouter>
