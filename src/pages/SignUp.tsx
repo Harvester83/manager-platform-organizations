@@ -47,7 +47,37 @@ const SignUp = () => {
       errors.password = "Password must be at least 6 characters long";
     }
 
+    if (!values.email) {
+      errors.email = "Email is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
+      errors.email = "Invalid email address";
+    }
+
+
     return errors;
+  };
+
+  const onSubmit = (values: FormValue) => {
+    console.log(1, values);
+    if (values) {
+      const loginUser = {
+        id: Number(new Date()),
+        organization_id: Number(new Date()),
+        organization_name: values.organization_name,
+        phone: values.phone,
+        address: values.address,
+        username: values.username,
+        lastName: values.lastName,
+        email: values.email,
+        password: values.password,
+        role: "admin",
+      };
+      dispatch(setCurrentUser(loginUser));
+      dispatch(addUser(loginUser));
+      navigate("/");
+    }
   };
 
   return (
@@ -66,35 +96,9 @@ const SignUp = () => {
         <Formik
           initialValues={initialValues}
           validate={validate}
-          onSubmit={(values) => {
-            console.log(1, values);
-            if (values) {
-              const loginUser = {
-                id: Number(new Date()),
-                organization_id: Number(new Date()),
-                organization_name: values.organization_name,
-                phone: values.phone,
-                address: values.address,
-                username: values.username,
-                lastName: values.lastName,
-                email: values.email,
-                password: values.password,
-                role: "admin",
-              };
-              dispatch(setCurrentUser(loginUser));
-              dispatch(addUser(loginUser));
-              navigate("/");
-            }
-          }}
+          onSubmit={onSubmit}
         >
-          {({
-            handleChange,
-            errors,
-            isValid,
-            dirty,
-            handleBlur,
-            handleSubmit,
-          }) => (
+          {({ handleChange, errors, isValid, handleBlur, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <TextField
                 error={!!errors.organization_name}
@@ -145,6 +149,7 @@ const SignUp = () => {
               />
 
               <TextField
+              error={!!errors.email}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 id="email"
@@ -152,6 +157,7 @@ const SignUp = () => {
                 className="input-wrapper"
                 label="Email"
                 type="email"
+                helperText={errors.email ? errors.email : ""}
               />
 
               <TextField

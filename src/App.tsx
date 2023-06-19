@@ -9,19 +9,21 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 
 function App() {
-  //const [loader, setLoader] = React.useState(false);
+  const [loader, setLoader] = React.useState(false);
 
-  React.useEffect(() => {
-    console.log("App useEffect: ");
-  }, []);
-
-
-
-
+  console.log("App.tsx");
   return (
-    <div>
-      <Manager />
-    </div>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route path="/manager" element={<Manager loader={loader} />} />
+            <Route path="" element={<SignIn setLoader={setLoader} />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 

@@ -11,18 +11,6 @@ export const mockUsers = [
     role: "user",
     lastName: "Surname1",
   },
-  // {
-  //   id: 2,
-  //   organization_id: 24,
-  //   organization_name: "TechSolutions",
-  //   phone: "+712345678",
-  //   address: "Central district",
-  //   username: "Romo",
-  //   email: "romo@gmail.com",
-  //   password: "123456",
-  //   role: "admin",
-  //   lastName: "Surname2",
-  // },
   {
     id: 3,
     organization_id: 24,
